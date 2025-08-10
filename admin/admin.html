@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin — 1000 Home Vibes</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-950 text-white p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4">Admin Panel — 1000 Home Vibes</h1>
+
+    <!-- CONFIG: change BACKEND_URL to your backend URL when deploying -->
+    <script>const BACKEND_URL = 'http://localhost:5000';</script>
+
+    <div id="loginBox" class="mb-6">
+      <h2 class="text-xl mb-2">Login</h2>
+      <input id="adminUsername" class="p-2 text-black block w-full mb-2" placeholder="Username" />
+      <input id="adminPassword" type="password" class="p-2 text-black block w-full mb-2" placeholder="Password" />
+      <div>
+        <button id="loginBtn" class="bg-yellow-500 text-black px-4 py-2 rounded">Login</button>
+        <button id="logoutBtn" class="bg-gray-700 text-white px-4 py-2 rounded hidden">Logout</button>
+      </div>
+    </div>
+
+    <div id="adminArea" class="hidden">
+      <h2 class="text-2xl mb-4">Add Product</h2>
+      <input id="title" placeholder="Title" class="p-2 text-black block w-full mb-2" />
+      <input id="description" placeholder="Short description" class="p-2 text-black block w-full mb-2" />
+      <input id="image" placeholder="Image URL" class="p-2 text-black block w-full mb-2" />
+      <input id="link" placeholder="Amazon link (include ?tag=...) " class="p-2 text-black block w-full mb-2" />
+      <div class="mb-6">
+        <button id="addBtn" class="bg-yellow-500 text-black px-4 py-2 rounded">Add Product</button>
+      </div>
+
+      <h2 class="text-2xl mb-3">Current Products</h2>
+      <div id="productsList" class="space-y-4"></div>
+    </div>
+  </div>
+
+<script>
+  // helpers
+  function token() { return localStorage.getItem('admin_token'); }
+  function authHeaders() {
+    const t = token();
+    return t ? { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+  }
+
+  // UI elements
+  const loginBox = document.getElementById('loginBox');
+  const adminArea = document.getElementById('adminArea');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  async function showAuthState() {
+    if (token()) {
+      loginBox.classList.add('hidden');
+      adminArea.classList.remove('hidden');
+      logoutBtn.classList.remove('hidden');
+      loadProducts();
+    } else {
+      loginBox.classList.remove('hidden');
+      adminArea.classList.add('hidden');
+      logoutBtn.classList.add('hidden');
+    }
+  }
+
+  // login
+  loginBtn.addEventListener('click', async () => {
+    const username = document.getElementById('adminUsername').value;
+    const password = document.getElementById('adminPassword').value;
+    try {
+      const res = await fetch(BACKEND_URL + '/api/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password })
+      });
+      if (!res.ok) throw new Error('Login failed');
+      const data = await res.json();
+      localStorage.setItem('admin_token', data.token);
+      alert('Logged in');
+      showAuthState();
+    } catch (err) {
+      alert('Login failed. Check credentials.');
+      console.error(err);
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('admin_token');
+    showAuthState();
+  });
+
+  // add product
+  document.getElementById('addBtn').addEventListener('click', async () => {
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const image = document.getElementById('image').value.trim();
+    const link = document.getElementById('link').value.trim();
+    if (!title || !link) { alert('title and link required'); return; }
+    try {
+      const res = await fetch(BACKEND_URL + '/api/products', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ title, description, image, link })
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(()=>null);
+        throw new Error(j && j.error ? j.error : 'Add failed');
+      }
+      document.getElementById('title').value='';
+      document.getElementById('description').value='';
+      document.getElementById('image').value='';
+      document.getElementById('link').value='';
+      loadProducts();
+    } catch (err) {
+      alert('Error: ' + err.message);
+      console.error(err);
+    }
+  });
+
+  // load products
+  async function loadProducts() {
+    try {
+      const res = await fetch(BACKEND_URL + '/api/products');
+      const products = await res.json();
+      const container = document.getElementById('productsList');
+      container.innerHTML = '';
+      products.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'bg-white text-black p-4 rounded flex gap-4 items-start';
+        el.innerHTML = `
+          <img src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 object-cover rounded" />
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-bold">${escapeHtml(p.title)}</h3>
+                <p class="text-sm">${escapeHtml(p.description || '')}</p>
+                <a class="text-xs underline" href="${p.link}" target="_blank">View on Amazon</a>
+              </div>
+              <div class="space-y-2">
+                <button data-id="${p.id}" class="editBtn bg-blue-500 px-3 py-1 rounded text-white">Edit</button>
+                <button data-id="${p.id}" class="delBtn bg-red-600 px-3 py-1 rounded text-white">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+
+      document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.id;
+        if (!confirm('Delete this product?')) return;
+        const res = await fetch(BACKEND_URL + '/api/products/' + id, { method: 'DELETE', headers: authHeaders() });
+        if (!res.ok) { alert('Delete failed'); return; }
+        loadProducts();
+      }));
+
+      document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.id;
+        const newTitle = prompt('New title (leave blank to keep):');
+        if (newTitle === null) return;
+        const newDesc = prompt('New description (leave blank to keep):');
+        const payload = {};
+        if (newTitle) payload.title = newTitle;
+        if (newDesc) payload.description = newDesc;
+        if (Object.keys(payload).length === 0) return;
+        const res = await fetch(BACKEND_URL + '/api/products/' + id, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) { alert('Update failed'); return; }
+        loadProducts();
+      }));
+
+    } catch (err) {
+      console.error(err);
+      alert('Could not load products');
+    }
+  }
+
+  // small escape
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+  // init
+  showAuthState();
+</script>
+</body>
+</html>
