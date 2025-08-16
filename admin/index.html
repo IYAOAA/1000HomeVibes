@@ -133,14 +133,17 @@
           body: JSON.stringify(products)
         });
         if (!res.ok) throw new Error('Save failed');
-        document.getElementById('status').textContent = 'Saved ✅';
+
+        // ✅ Reload immediately after save
+        await loadFromGit();
+        document.getElementById('status').textContent = 'Saved ✅ and reloaded';
       } catch (e) {
         document.getElementById('status').textContent = 'Error saving ❌';
       }
     }
 
-    // Auto-load on start
-    loadFromGit();
+    // ✅ Auto-load on page open
+    window.addEventListener('DOMContentLoaded', loadFromGit);
   </script>
 </body>
 </html>
