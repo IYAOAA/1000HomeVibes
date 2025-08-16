@@ -4,18 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1000 Home Vibes Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #013220; /* Royal Dark Green */
+      color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: gold;
+      text-align: center;
+    }
+    .product {
+      border: 2px solid gold;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: gold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: gold;
+      color: #013220;
+      padding: 10px 15px;
+      margin: 10px 5px 0 0;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffd700;
+    }
+    #controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
-  <button id="loadBtn">Reload from GitHub</button>
-  <button id="saveBtn">Save to GitHub</button>
+  <div id="controls">
+    <button onclick="loadFromGit()">Reload from GitHub</button>
+    <button onclick="addProduct()">+ Add Product</button>
+    <button onclick="saveToGit()">💾 Save to GitHub</button>
+  </div>
+  <div id="products"></div>
   <pre id="status"></pre>
 
   <script>
-    const API_BASE = 'https://one000homevibes.onrender.com'; // Your live Gatekeeper backend
+    const API_BASE = 'https://one000homevibes.onrender.com';
     const ADMIN_SECRET = ''; // leave empty to prompt when saving
 
     let products = [];
+
+    function renderProducts() {
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+      products.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <label>Title</label>
+          <input value="${p.title || ''}" oninput="products[${i}].title=this.value">
+          <label>Product ID</label>
+          <input value="${p.id || ''}" oninput="products[${i}].id=this.value">
+          <label>Image URL</label>
+          <input value="${p.image || ''}" oninput="products[${i}].image=this.value">
+          <label>Category</label>
+          <select onchange="products[${i}].category=this.value">
+            <option ${p.category==='Air'?'selected':''}>Air</option>
+            <option ${p.category==='Sleep'?'selected':''}>Sleep</option>
+            <option ${p.category==='Body'?'selected':''}>Body</option>
+          </select>
+          <label>Description</label>
+          <textarea rows="3" oninput="products[${i}].description=this.value">${p.description || ''}</textarea>
+          <label>Buy Link</label>
+          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
+          <button onclick="removeProduct(${i})">❌ Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addProduct() {
+      products.push({ title: '', id: '', image: '', category: 'Air', description: '', buy_link: '' });
+      renderProducts();
+    }
+
+    function removeProduct(i) {
+      products.splice(i, 1);
+      renderProducts();
+    }
 
     async function loadFromGit() {
       document.getElementById('status').textContent = 'Loading...';
@@ -23,14 +116,16 @@
         const res = await fetch(API_BASE + '/products');
         const data = await res.json();
         products = data.json || [];
-        document.getElementById('status').textContent = JSON.stringify(products, null, 2);
+        renderProducts();
+        document.getElementById('status').textContent = 'Loaded ✅';
       } catch (e) {
-        document.getElementById('status').textContent = 'Error loading';
+        document.getElementById('status').textContent = 'Error loading ❌';
       }
     }
 
     async function saveToGit() {
       const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
+      document.getElementById('status').textContent = 'Saving...';
       try {
         const res = await fetch(API_BASE + '/update-products', {
           method: 'POST',
@@ -40,12 +135,12 @@
         if (!res.ok) throw new Error('Save failed');
         document.getElementById('status').textContent = 'Saved ✅';
       } catch (e) {
-        document.getElementById('status').textContent = 'Error saving';
+        document.getElementById('status').textContent = 'Error saving ❌';
       }
     }
 
-    document.getElementById('loadBtn').addEventListener('click', loadFromGit);
-    document.getElementById('saveBtn').addEventListener('click', saveToGit);
+    // Auto-load on start
+    loadFromGit();
   </script>
 </body>
 </html>
