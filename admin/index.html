@@ -16,6 +16,25 @@
       color: gold;
       text-align: center;
     }
+    /* ✅ Navigation Bar */
+    .nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 18px;
+      background: gold;
+      color: #013220;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav a:hover {
+      background: #ffd700;
+    }
     .product {
       border: 2px solid gold;
       padding: 15px;
@@ -64,6 +83,13 @@
 </head>
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
+
+  <!-- ✅ Navigation -->
+  <div class="nav">
+    <a href="index.html">📦 Product Manager</a>
+    <a href="analytics.html">📊 View Analytics</a>
+  </div>
+
   <div id="controls">
     <button onclick="loadFromGit()">Reload from GitHub</button>
     <button onclick="addProduct()">+ Add Product</button>
