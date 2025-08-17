@@ -94,6 +94,8 @@
     <button onclick="loadFromGit()">Reload from GitHub</button>
     <button onclick="addProduct()">+ Add Product</button>
     <button onclick="saveToGit()">💾 Save to GitHub</button>
+    <!-- 🤖 NEW AI button -->
+    <button onclick="autoUpdate()">🤖 Auto-Update Products</button>
   </div>
   <div id="products"></div>
   <pre id="status"></pre>
@@ -192,6 +194,26 @@
         document.getElementById('status').textContent = 'Saved ✅ and reloaded';
       } catch (e) {
         document.getElementById('status').textContent = 'Error saving ❌';
+      }
+    }
+
+    async function autoUpdate() {
+      document.getElementById('status').textContent = '🤖 Thinking...';
+      try {
+        const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
+        const res = await fetch(API_BASE + '/auto-update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Auto update failed');
+
+        products = data.products || [];
+        renderProducts();
+        document.getElementById('status').textContent = '🤖 Auto-updated ✅';
+      } catch (e) {
+        console.error(e);
+        document.getElementById('status').textContent = '❌ Auto-update failed';
       }
     }
 
