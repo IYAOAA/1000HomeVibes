@@ -1,72 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Analytics Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 Analytics Dashboard – 1000HomeVibes</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #0b3d2e; /* dark royal green */
-      color: #f5c542; /* gold */
-      text-align: center;
+      background-color: #013220; /* Royal Dark Green */
+      color: #f5f5f5;
+      margin: 0;
       padding: 20px;
     }
     h1 {
-      color: #f5c542;
+      color: gold;
+      text-align: center;
     }
-    .chart-container {
-      width: 80%;
-      margin: 30px auto;
+    .nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 18px;
+      background: gold;
+      color: #013220;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav a:hover {
+      background: #ffd700;
+    }
+    .section {
+      margin: 30px 0;
+    }
+    canvas {
       background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <h1>📊 Analytics Dashboard</h1>
-  <p>Total Clicks: <span id="total-clicks">0</span></p>
+  <h1>📊 Analytics Dashboard – 1000HomeVibes</h1>
 
-  <div class="chart-container">
-    <canvas id="statsChart"></canvas>
+  <!-- ✅ Navigation -->
+  <div class="nav">
+    <a href="index.html">📦 Product Manager</a>
+    <a href="analytics.html">📊 View Analytics</a>
+  </div>
+
+  <!-- Top Products -->
+  <div class="section">
+    <h2>🔥 Top 5 Products</h2>
+    <ul id="top-products"></ul>
+  </div>
+
+  <!-- Category Breakdown -->
+  <div class="section">
+    <h2>🏷️ Category Breakdown</h2>
+    <canvas id="categoryChart" width="400" height="200"></canvas>
+  </div>
+
+  <!-- Daily Trends -->
+  <div class="section">
+    <h2>📈 Click Trends Over Time</h2>
+    <canvas id="trendChart" width="400" height="200"></canvas>
   </div>
 
   <script>
+    const API_BASE = "https://one000homevibes.onrender.com";
+
     async function loadAnalytics() {
-      try {
-        const res = await fetch("https://one000homevibes.onrender.com/analytics");
-        const data = await res.json();
+      const res = await fetch(API_BASE + "/analytics");
+      const data = await res.json();
 
-        document.getElementById("total-clicks").innerText = data.total;
+      // ✅ Top 5 products
+      const productStats = data.stats || {};
+      const sorted = Object.entries(productStats).sort((a,b) => b[1]-a[1]);
+      const top5 = sorted.slice(0,5);
+      document.getElementById("top-products").innerHTML =
+        top5.map(([id,count]) => `<li>${id}: ${count} clicks</li>`).join("");
 
-        const labels = Object.keys(data.stats);
-        const values = Object.values(data.stats);
+      // ✅ Category Breakdown
+      const categories = { Air:0, Sleep:0, Body:0 };
+      sorted.forEach(([id,count]) => {
+        if (id.toLowerCase().includes("air")) categories.Air += count;
+        else if (id.toLowerCase().includes("sleep")) categories.Sleep += count;
+        else categories.Body += count;
+      });
 
-        const ctx = document.getElementById("statsChart").getContext("2d");
-        new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: labels,
-            datasets: [{
-              label: "Product Clicks",
-              data: values,
-              backgroundColor: "#0b3d2e",
-              borderColor: "#f5c542",
-              borderWidth: 2
-            }]
-          },
-          options: {
-            responsive: true,
-            scales: {
-              y: { beginAtZero: true }
-            }
-          }
-        });
-      } catch (err) {
-        console.error("Failed to load analytics", err);
-      }
+      new Chart(document.getElementById("categoryChart"), {
+        type: "pie",
+        data: {
+          labels: Object.keys(categories),
+          datasets: [{
+            data: Object.values(categories),
+            backgroundColor: ["#4CAF50","#FFC107","#03A9F4"]
+          }]
+        }
+      });
+
+      // ✅ Daily Trends (simulate from clicks.json timestamps if available)
+      const trends = {};
+      (data.clicks || []).forEach(c => {
+        const day = new Date(c.timestamp).toLocaleDateString();
+        trends[day] = (trends[day]||0)+1;
+      });
+
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+          labels: Object.keys(trends),
+          datasets: [{
+            label: "Clicks per Day",
+            data: Object.values(trends),
+            borderColor: "gold",
+            backgroundColor: "rgba(255,215,0,0.2)",
+            fill: true
+          }]
+        }
+      });
     }
 
     loadAnalytics();
