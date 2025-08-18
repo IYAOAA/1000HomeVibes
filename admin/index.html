@@ -7,19 +7,13 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #013220; /* Royal Dark Green */
+      background-color: #013220;
       color: #f5f5f5;
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      color: gold;
-      text-align: center;
-    }
-    .nav {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    h1 { color: gold; text-align: center; }
+    .nav { text-align: center; margin-bottom: 20px; }
     .nav a {
       display: inline-block;
       margin: 0 10px;
@@ -31,9 +25,7 @@
       text-decoration: none;
       transition: all 0.2s;
     }
-    .nav a:hover {
-      background: #ffd700;
-    }
+    .nav a:hover { background: #ffd700; }
     .product {
       border: 2px solid gold;
       padding: 15px;
@@ -41,12 +33,7 @@
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
     }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-      color: gold;
-    }
+    label { display: block; margin-top: 10px; font-weight: bold; color: gold; }
     input, textarea, select {
       width: 100%;
       padding: 8px;
@@ -64,26 +51,14 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #ffd700;
-    }
-    #controls {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    img.preview {
-      max-width: 150px;
-      margin-top: 8px;
-      border: 1px solid gold;
-      border-radius: 8px;
-      display: block;
-    }
+    button:hover { background-color: #ffd700; }
+    #controls { text-align: center; margin-bottom: 20px; }
+    img.preview { max-width: 150px; margin-top: 8px; border: 1px solid gold; border-radius: 8px; display: block; }
   </style>
 </head>
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
 
-  <!-- Navigation -->
   <div class="nav">
     <a href="index.html">📦 Product Manager</a>
     <a href="analytics.html">📊 View Analytics</a>
@@ -100,18 +75,18 @@
   <pre id="status"></pre>
 
   <script>
-    const API_BASE = "https://your-gatekeeper-server.onrender.com"; // ✅ replace with your deployed server URL
-    const ADMIN_SECRET = "YOUR_ADMIN_SECRET"; // ✅ set same as in server.js
+    const API_BASE = 'https://one000homevibes.onrender.com';
+    const ADMIN_SECRET = ''; // leave empty to prompt
 
     let products = [];
 
     function renderProducts() {
-      const container = document.getElementById("products");
-      container.innerHTML = "";
+      const container = document.getElementById('products');
+      container.innerHTML = '';
       products.forEach((p, i) => {
         if (!p.mode) p.mode = "affiliate";
-        const div = document.createElement("div");
-        div.className = "product";
+        const div = document.createElement('div');
+        div.className = 'product';
         div.innerHTML = `
           <label>Title</label>
           <input value="${p.title || ''}" oninput="products[${i}].title=this.value">
@@ -122,9 +97,7 @@
           <label>Image URL</label>
           <input value="${p.image || ''}" oninput="products[${i}].image=this.value; updatePreview(${i})">
 
-          <div id="preview-${i}">
-            ${p.image ? `<img src="${p.image}" class="preview">` : ''}
-          </div>
+          <div id="preview-${i}">${p.image ? `<img src="${p.image}" class="preview">` : ''}</div>
 
           <label>Category</label>
           <select onchange="products[${i}].category=this.value">
@@ -153,8 +126,7 @@
 
     function updatePreview(i) {
       const container = document.getElementById(`preview-${i}`);
-      const url = products[i].image;
-      container.innerHTML = url ? `<img src="${url}" class="preview">` : '';
+      container.innerHTML = products[i].image ? `<img src="${products[i].image}" class="preview">` : '';
     }
 
     function addProduct() {
@@ -162,67 +134,60 @@
       renderProducts();
     }
 
-    function removeProduct(i) {
-      products.splice(i, 1);
-      renderProducts();
-    }
+    function removeProduct(i) { products.splice(i,1); renderProducts(); }
 
     async function loadFromGit() {
-      document.getElementById("status").textContent = "Loading...";
+      document.getElementById('status').textContent = 'Loading...';
       try {
-        const res = await fetch(API_BASE + "/products");
+        const res = await fetch(API_BASE + '/products');
         const data = await res.json();
         products = data || [];
         renderProducts();
-        document.getElementById("status").textContent = "Loaded ✅";
+        document.getElementById('status').textContent = 'Loaded ✅';
       } catch (e) {
-        document.getElementById("status").textContent = "Error loading ❌";
+        document.getElementById('status').textContent = 'Error loading ❌';
+        console.error(e);
       }
     }
 
     async function saveToGit() {
-      const secret = ADMIN_SECRET || prompt("Enter Admin Secret:");
-      document.getElementById("status").textContent = "Saving...";
+      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
+      document.getElementById('status').textContent = 'Saving...';
       try {
-        const res = await fetch(API_BASE + "/update-products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-secret": secret },
+        const res = await fetch(API_BASE + '/update-products', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json','x-admin-secret':secret },
           body: JSON.stringify(products)
         });
-        if (!res.ok) throw new Error("Save failed");
+        if(!res.ok) throw new Error('Save failed');
         await loadFromGit();
-        document.getElementById("status").textContent = "Saved ✅ and reloaded";
-      } catch (e) {
-        document.getElementById("status").textContent = "Error saving ❌";
+        document.getElementById('status').textContent = 'Saved ✅ and reloaded';
+      } catch(e) {
+        document.getElementById('status').textContent = 'Error saving ❌';
+        console.error(e);
       }
     }
 
-    // ✅ AI button wired to /auto-update
     async function autoGenerateProducts() {
-      document.getElementById("status").textContent = "🤖 Generating products with AI...";
+      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
+      document.getElementById('status').textContent = 'Generating AI products...';
       try {
-        const res = await fetch(`${API_BASE}/auto-update`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-admin-secret": ADMIN_SECRET
-          }
+        const res = await fetch(API_BASE + '/auto-update', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json','x-admin-secret': secret }
         });
+        if(!res.ok) throw new Error('AI update failed');
         const data = await res.json();
-        if (data.success) {
-          document.getElementById("status").textContent = "✅ AI products added! Reloading...";
-          products = data.products || [];
-          renderProducts();
-        } else {
-          document.getElementById("status").textContent = "❌ AI failed: " + (data.error || "Unknown error");
-        }
-      } catch (e) {
-        document.getElementById("status").textContent = "❌ AI request error: " + e.message;
+        products = data.products || [];
+        renderProducts();
+        document.getElementById('status').textContent = 'AI products added ✅';
+      } catch(e) {
+        document.getElementById('status').textContent = 'Error AI update ❌';
+        console.error(e);
       }
     }
 
-    // Auto-load on page open
-    window.addEventListener("DOMContentLoaded", loadFromGit);
+    window.addEventListener('DOMContentLoaded', loadFromGit);
   </script>
 </body>
 </html>
