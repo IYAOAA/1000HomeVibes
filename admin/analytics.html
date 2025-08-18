@@ -8,72 +8,39 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #013220; /* Royal Dark Green */
+      background-color: #013220;
       color: #f5f5f5;
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      color: gold;
-      text-align: center;
-    }
-    .nav {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .nav a {
-      display: inline-block;
-      margin: 0 10px;
-      padding: 10px 18px;
-      background: gold;
-      color: #013220;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .nav a:hover {
-      background: #ffd700;
-    }
-    .section {
-      margin: 30px 0;
-    }
-    canvas {
-      background: #fff;
-      border-radius: 10px;
-      padding: 10px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      margin: 5px 0;
-    }
+    h1 { color: gold; text-align: center; }
+    .nav { text-align: center; margin-bottom: 20px; }
+    .nav a { display: inline-block; margin: 0 10px; padding: 10px 18px; background: gold; color: #013220; font-weight: bold; border-radius: 8px; text-decoration: none; transition: all 0.2s; }
+    .nav a:hover { background: #ffd700; }
+    .section { margin: 30px 0; }
+    canvas { background: #fff; border-radius: 10px; padding: 10px; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 5px 0; }
   </style>
 </head>
 <body>
   <h1>📊 Analytics Dashboard – 1000HomeVibes</h1>
 
-  <!-- ✅ Navigation -->
   <div class="nav">
     <a href="index.html">📦 Product Manager</a>
     <a href="analytics.html">📊 View Analytics</a>
   </div>
 
-  <!-- Top Products -->
   <div class="section">
     <h2>🔥 Top 5 Products</h2>
     <ul id="top-products"></ul>
   </div>
 
-  <!-- Category Breakdown -->
   <div class="section">
     <h2>🏷️ Category Breakdown</h2>
     <canvas id="categoryChart" width="400" height="200"></canvas>
   </div>
 
-  <!-- Daily Trends -->
   <div class="section">
     <h2>📈 Click Trends Over Time</h2>
     <canvas id="trendChart" width="400" height="200"></canvas>
@@ -86,35 +53,41 @@
       const res = await fetch(API_BASE + "/analytics");
       const data = await res.json();
 
-      // ✅ Top 5 products
-      const productStats = data.stats || {};
-      const sorted = Object.entries(productStats).sort((a,b) => b[1]-a[1]);
-      const top5 = sorted.slice(0,5);
-      document.getElementById("top-products").innerHTML =
-        top5.map(([id,count]) => `<li>${id}: ${count} clicks</li>`).join("");
+      const products = data.products || [];
+      const clicks = data.clicks || [];
 
-      // ✅ Category Breakdown
+      // Top 5 products
+      const stats = {};
+      clicks.forEach(c => stats[c.product_id] = (stats[c.product_id]||0)+1);
+      const sorted = Object.entries(stats).sort((a,b)=>b[1]-a[1]);
+      const top5 = sorted.slice(0,5);
+
+      document.getElementById("top-products").innerHTML =
+        top5.map(([id,count]) => {
+          const product = products.find(p=>p.id===id);
+          const title = product ? product.title : id;
+          return `<li>${title}: ${count} clicks</li>`;
+        }).join("");
+
+      // Category breakdown
       const categories = { Air:0, Sleep:0, Body:0 };
-      sorted.forEach(([id,count]) => {
-        if (id.toLowerCase().includes("air")) categories.Air += count;
-        else if (id.toLowerCase().includes("sleep")) categories.Sleep += count;
-        else categories.Body += count;
+      clicks.forEach(c=>{
+        const product = products.find(p=>p.id===c.product_id);
+        const cat = product ? product.category : "Other";
+        if(categories[cat] !== undefined) categories[cat] += 1;
       });
 
       new Chart(document.getElementById("categoryChart"), {
         type: "pie",
         data: {
           labels: Object.keys(categories),
-          datasets: [{
-            data: Object.values(categories),
-            backgroundColor: ["#4CAF50","#FFC107","#03A9F4"]
-          }]
+          datasets: [{ data: Object.values(categories), backgroundColor: ["#4CAF50","#FFC107","#03A9F4"] }]
         }
       });
 
-      // ✅ Daily Trends (simulate from clicks.json timestamps if available)
+      // Daily trends
       const trends = {};
-      (data.clicks || []).forEach(c => {
+      clicks.forEach(c=>{
         const day = new Date(c.timestamp).toLocaleDateString();
         trends[day] = (trends[day]||0)+1;
       });
