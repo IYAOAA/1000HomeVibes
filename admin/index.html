@@ -16,7 +16,6 @@
       color: gold;
       text-align: center;
     }
-    /* ✅ Navigation Bar */
     .nav {
       text-align: center;
       margin-bottom: 20px;
@@ -84,7 +83,6 @@
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
 
-  <!-- ✅ Navigation -->
   <div class="nav">
     <a href="index.html">📦 Product Manager</a>
     <a href="analytics.html">📊 View Analytics</a>
@@ -94,9 +92,8 @@
     <button onclick="loadFromGit()">Reload from GitHub</button>
     <button onclick="addProduct()">+ Add Product</button>
     <button onclick="saveToGit()">💾 Save to GitHub</button>
-    <!-- 🤖 NEW AI button -->
-    <button onclick="autoUpdate()">🤖 Auto-Update Products</button>
   </div>
+
   <div id="products"></div>
   <pre id="status"></pre>
 
@@ -123,7 +120,6 @@
           <input value="${p.image || ''}" 
                  oninput="products[${i}].image=this.value; updatePreview(${i})">
 
-          <!-- ✅ Live preview -->
           <div id="preview-${i}">
             ${p.image ? `<img src="${p.image}" class="preview">` : ''}
           </div>
@@ -135,11 +131,15 @@
             <option ${p.category==='Body'?'selected':''}>Body</option>
           </select>
 
-          <label>Description</label>
-          <textarea rows="3" oninput="products[${i}].description=this.value">${p.description || ''}</textarea>
+          <label>Mode</label>
+          <select onchange="setMode(${i}, this.value)">
+            <option value="affiliate" ${p.mode==='affiliate'?'selected':''}>Affiliate</option>
+            <option value="direct" ${p.mode==='direct'?'selected':''}>Direct</option>
+          </select>
 
-          <label>Buy Link</label>
-          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
+          <div id="mode-fields-${i}">
+            ${renderModeFields(p, i)}
+          </div>
 
           <button onclick="removeProduct(${i})">❌ Remove</button>
         `;
@@ -147,16 +147,36 @@
       });
     }
 
+    function renderModeFields(p, i) {
+      if (p.mode === 'direct') {
+        return `
+          <label>Price (₦)</label>
+          <input type="number" value="${p.price || ''}" oninput="products[${i}].price=this.value">
+
+          <label>Stock</label>
+          <input type="number" value="${p.stock || ''}" oninput="products[${i}].stock=this.value">
+        `;
+      } else {
+        return `
+          <label>Buy Link</label>
+          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
+        `;
+      }
+    }
+
+    function setMode(i, mode) {
+      products[i].mode = mode;
+      document.getElementById(`mode-fields-${i}`).innerHTML = renderModeFields(products[i], i);
+    }
+
     function updatePreview(i) {
       const container = document.getElementById(`preview-${i}`);
       const url = products[i].image;
-      container.innerHTML = url 
-        ? `<img src="${url}" class="preview">`
-        : '';
+      container.innerHTML = url ? `<img src="${url}" class="preview">` : '';
     }
 
     function addProduct() {
-      products.push({ title: '', id: '', image: '', category: 'Air', description: '', buy_link: '' });
+      products.push({ title: '', id: '', image: '', category: 'Air', description: '', mode: 'affiliate', buy_link: '' });
       renderProducts();
     }
 
@@ -189,7 +209,6 @@
         });
         if (!res.ok) throw new Error('Save failed');
 
-        // ✅ Reload immediately after save
         await loadFromGit();
         document.getElementById('status').textContent = 'Saved ✅ and reloaded';
       } catch (e) {
@@ -197,27 +216,6 @@
       }
     }
 
-    async function autoUpdate() {
-      document.getElementById('status').textContent = '🤖 Thinking...';
-      try {
-        const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
-        const res = await fetch(API_BASE + '/auto-update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Auto update failed');
-
-        products = data.products || [];
-        renderProducts();
-        document.getElementById('status').textContent = '🤖 Auto-updated ✅';
-      } catch (e) {
-        console.error(e);
-        document.getElementById('status').textContent = '❌ Auto-update failed';
-      }
-    }
-
-    // ✅ Auto-load on page open
     window.addEventListener('DOMContentLoaded', loadFromGit);
   </script>
 </body>
