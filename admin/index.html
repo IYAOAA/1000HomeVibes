@@ -16,7 +16,6 @@
       color: gold;
       text-align: center;
     }
-    /* ✅ Navigation Bar */
     .nav {
       text-align: center;
       margin-bottom: 20px;
@@ -84,7 +83,7 @@
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
 
-  <!-- ✅ Navigation -->
+  <!-- Navigation -->
   <div class="nav">
     <a href="index.html">📦 Product Manager</a>
     <a href="analytics.html">📊 View Analytics</a>
@@ -95,24 +94,24 @@
     <button onclick="addProduct()">+ Add Product</button>
     <button onclick="saveToGit()">💾 Save to GitHub</button>
     <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
-  </div> <!-- ✅ properly closed -->
+  </div>
 
   <div id="products"></div>
   <pre id="status"></pre>
 
   <script>
-    const API_BASE = 'https://one000homevibes.onrender.com';
-    const ADMIN_SECRET = ''; // leave empty to prompt when saving
+    const API_BASE = "https://your-gatekeeper-server.onrender.com"; // ✅ replace with your deployed server URL
+    const ADMIN_SECRET = "YOUR_ADMIN_SECRET"; // ✅ set same as in server.js
 
     let products = [];
 
     function renderProducts() {
-      const container = document.getElementById('products');
-      container.innerHTML = '';
+      const container = document.getElementById("products");
+      container.innerHTML = "";
       products.forEach((p, i) => {
-        if (!p.mode) p.mode = "affiliate"; // ✅ Default mode
-        const div = document.createElement('div');
-        div.className = 'product';
+        if (!p.mode) p.mode = "affiliate";
+        const div = document.createElement("div");
+        div.className = "product";
         div.innerHTML = `
           <label>Title</label>
           <input value="${p.title || ''}" oninput="products[${i}].title=this.value">
@@ -121,10 +120,8 @@
           <input value="${p.id || ''}" oninput="products[${i}].id=this.value">
 
           <label>Image URL</label>
-          <input value="${p.image || ''}" 
-                 oninput="products[${i}].image=this.value; updatePreview(${i})">
+          <input value="${p.image || ''}" oninput="products[${i}].image=this.value; updatePreview(${i})">
 
-          <!-- ✅ Live preview -->
           <div id="preview-${i}">
             ${p.image ? `<img src="${p.image}" class="preview">` : ''}
           </div>
@@ -157,21 +154,11 @@
     function updatePreview(i) {
       const container = document.getElementById(`preview-${i}`);
       const url = products[i].image;
-      container.innerHTML = url 
-        ? `<img src="${url}" class="preview">`
-        : '';
+      container.innerHTML = url ? `<img src="${url}" class="preview">` : '';
     }
 
     function addProduct() {
-      products.push({ 
-        title: '', 
-        id: '', 
-        image: '', 
-        category: 'Air', 
-        description: '', 
-        buy_link: '', 
-        mode: 'affiliate' // ✅ default
-      });
+      products.push({ title:'', id:'', image:'', category:'Air', description:'', buy_link:'', mode:'affiliate' });
       renderProducts();
     }
 
@@ -181,76 +168,61 @@
     }
 
     async function loadFromGit() {
-      document.getElementById('status').textContent = 'Loading...';
+      document.getElementById("status").textContent = "Loading...";
       try {
-        const res = await fetch(API_BASE + '/products');
+        const res = await fetch(API_BASE + "/products");
         const data = await res.json();
-        products = data.json || data || [];
+        products = data || [];
         renderProducts();
-        document.getElementById('status').textContent = 'Loaded ✅';
+        document.getElementById("status").textContent = "Loaded ✅";
       } catch (e) {
-        document.getElementById('status').textContent = 'Error loading ❌';
+        document.getElementById("status").textContent = "Error loading ❌";
       }
     }
 
     async function saveToGit() {
-      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
-      document.getElementById('status').textContent = 'Saving...';
+      const secret = ADMIN_SECRET || prompt("Enter Admin Secret:");
+      document.getElementById("status").textContent = "Saving...";
       try {
-        const res = await fetch(API_BASE + '/update-products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        const res = await fetch(API_BASE + "/update-products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-secret": secret },
           body: JSON.stringify(products)
         });
-        if (!res.ok) throw new Error('Save failed');
-
-        // ✅ Reload immediately after save
+        if (!res.ok) throw new Error("Save failed");
         await loadFromGit();
-        document.getElementById('status').textContent = 'Saved ✅ and reloaded';
+        document.getElementById("status").textContent = "Saved ✅ and reloaded";
       } catch (e) {
-        document.getElementById('status').textContent = 'Error saving ❌';
+        document.getElementById("status").textContent = "Error saving ❌";
       }
     }
 
-    // ✅ AI Generator (local demo)
-    function autoGenerateProducts() {
-      const sampleProducts = [
-        {
-          title: "Eco Air Purifier",
-          id: "AIR001",
-          image: "https://via.placeholder.com/150/00FF00/FFFFFF?text=Air+Purifier",
-          category: "Air",
-          description: "A smart eco-friendly air purifier with silent mode.",
-          buy_link: "https://example.com/air-purifier",
-          mode: "affiliate"
-        },
-        {
-          title: "Memory Foam Pillow",
-          id: "SLEEP001",
-          image: "https://via.placeholder.com/150/0000FF/FFFFFF?text=Pillow",
-          category: "Sleep",
-          description: "Ultra-comfort memory foam pillow for better sleep.",
-          buy_link: "https://example.com/pillow",
-          mode: "direct"
-        },
-        {
-          title: "Aloe Vera Body Lotion",
-          id: "BODY001",
-          image: "https://via.placeholder.com/150/FF00FF/FFFFFF?text=Lotion",
-          category: "Body",
-          description: "Hydrating lotion made with natural aloe vera extract.",
-          buy_link: "https://example.com/lotion",
-          mode: "affiliate"
+    // ✅ AI button wired to /auto-update
+    async function autoGenerateProducts() {
+      document.getElementById("status").textContent = "🤖 Generating products with AI...";
+      try {
+        const res = await fetch(`${API_BASE}/auto-update`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-secret": ADMIN_SECRET
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("status").textContent = "✅ AI products added! Reloading...";
+          products = data.products || [];
+          renderProducts();
+        } else {
+          document.getElementById("status").textContent = "❌ AI failed: " + (data.error || "Unknown error");
         }
-      ];
-
-      products = products.concat(sampleProducts);
-      renderProducts();
-      document.getElementById('status').textContent = "🤖 AI generated 3 demo products!";
+      } catch (e) {
+        document.getElementById("status").textContent = "❌ AI request error: " + e.message;
+      }
     }
 
-    // ✅ Auto-load on page open
-    window.addEventListener('DOMContentLoaded', loadFromGit);
+    // Auto-load on page open
+    window.addEventListener("DOMContentLoaded", loadFromGit);
   </script>
 </body>
 </html>
