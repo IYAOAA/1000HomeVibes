@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Cart | 1000 Home Vibes</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="bg-green-950 text-white font-sans">
+  <header class="text-center py-10">
+    <h1 class="text-3xl font-bold text-yellow-100">🛒 My Cart</h1>
+    <a href="products.html" class="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">← Continue Shopping</a>
+  </header>
+
+  <section class="max-w-4xl mx-auto px-6 pb-20">
+    <div id="cart-items" class="space-y-6"></div>
+
+    <div class="bg-white text-black p-6 rounded-xl shadow-lg mt-10">
+      <h2 class="text-xl font-bold mb-4">Summary</h2>
+      <p id="cart-summary" class="mb-4">No items in cart.</p>
+      <button id="checkout-btn" class="bg-green-700 text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        ✅ Checkout (Coming Soon)
+      </button>
+    </div>
+  </section>
+
+  <footer class="text-center text-yellow-200 text-sm py-8">
+    &copy; 2025 1000 Home Vibes |
+    <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> |
+    <a href="about.html" class="underline hover:text-yellow-400">About</a>
+  </footer>
+
+  <script>
+    async function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const container = document.getElementById("cart-items");
+      const summary = document.getElementById("cart-summary");
+      const checkoutBtn = document.getElementById("checkout-btn");
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-center text-yellow-200">Your cart is empty.</p>`;
+        summary.textContent = "No items in cart.";
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      // Load all products
+      const products = await fetch("products.json").then(res => res.json());
+
+      let total = 0;
+      container.innerHTML = "";
+
+      cart.forEach((item, i) => {
+        const product = products.find(p => p.id === item.id);
+        if (!product) return;
+
+        // For now, fake price (later we’ll add real ones)
+        const price = product.price || 50; // fallback
+        total += price * item.quantity;
+
+        const div = document.createElement("div");
+        div.className = "flex items-center bg-white text-black p-4 rounded-lg shadow-lg";
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.title}" class="w-24 h-24 object-cover rounded mr-4">
+          <div class="flex-1">
+            <h3 class="font-bold">${product.title}</h3>
+            <p>$${price} x ${item.quantity}</p>
+          </div>
+          <button onclick="removeItem(${i})" class="ml-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500">❌ Remove</button>
+        `;
+        container.appendChild(div);
+      });
+
+      summary.textContent = `Total: $${total.toFixed(2)}`;
+      checkoutBtn.disabled = false;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    // Auto-load
+    window.addEventListener("DOMContentLoaded", loadCart);
+  </script>
+</body>
+</html>
