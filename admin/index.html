@@ -16,6 +16,7 @@
       color: gold;
       text-align: center;
     }
+    /* ✅ Navigation Bar */
     .nav {
       text-align: center;
       margin-bottom: 20px;
@@ -83,6 +84,7 @@
 <body>
   <h1>📦 Product Manager – 1000HomeVibes</h1>
 
+  <!-- ✅ Navigation -->
   <div class="nav">
     <a href="index.html">📦 Product Manager</a>
     <a href="analytics.html">📊 View Analytics</a>
@@ -93,7 +95,6 @@
     <button onclick="addProduct()">+ Add Product</button>
     <button onclick="saveToGit()">💾 Save to GitHub</button>
   </div>
-
   <div id="products"></div>
   <pre id="status"></pre>
 
@@ -107,6 +108,7 @@
       const container = document.getElementById('products');
       container.innerHTML = '';
       products.forEach((p, i) => {
+        if (!p.mode) p.mode = "affiliate"; // ✅ Default mode
         const div = document.createElement('div');
         div.className = 'product';
         div.innerHTML = `
@@ -120,6 +122,7 @@
           <input value="${p.image || ''}" 
                  oninput="products[${i}].image=this.value; updatePreview(${i})">
 
+          <!-- ✅ Live preview -->
           <div id="preview-${i}">
             ${p.image ? `<img src="${p.image}" class="preview">` : ''}
           </div>
@@ -131,15 +134,17 @@
             <option ${p.category==='Body'?'selected':''}>Body</option>
           </select>
 
+          <label>Description</label>
+          <textarea rows="3" oninput="products[${i}].description=this.value">${p.description || ''}</textarea>
+
           <label>Mode</label>
-          <select onchange="setMode(${i}, this.value)">
+          <select onchange="products[${i}].mode=this.value">
             <option value="affiliate" ${p.mode==='affiliate'?'selected':''}>Affiliate</option>
             <option value="direct" ${p.mode==='direct'?'selected':''}>Direct</option>
           </select>
 
-          <div id="mode-fields-${i}">
-            ${renderModeFields(p, i)}
-          </div>
+          <label>Buy Link</label>
+          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
 
           <button onclick="removeProduct(${i})">❌ Remove</button>
         `;
@@ -147,36 +152,24 @@
       });
     }
 
-    function renderModeFields(p, i) {
-      if (p.mode === 'direct') {
-        return `
-          <label>Price (₦)</label>
-          <input type="number" value="${p.price || ''}" oninput="products[${i}].price=this.value">
-
-          <label>Stock</label>
-          <input type="number" value="${p.stock || ''}" oninput="products[${i}].stock=this.value">
-        `;
-      } else {
-        return `
-          <label>Buy Link</label>
-          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
-        `;
-      }
-    }
-
-    function setMode(i, mode) {
-      products[i].mode = mode;
-      document.getElementById(`mode-fields-${i}`).innerHTML = renderModeFields(products[i], i);
-    }
-
     function updatePreview(i) {
       const container = document.getElementById(`preview-${i}`);
       const url = products[i].image;
-      container.innerHTML = url ? `<img src="${url}" class="preview">` : '';
+      container.innerHTML = url 
+        ? `<img src="${url}" class="preview">`
+        : '';
     }
 
     function addProduct() {
-      products.push({ title: '', id: '', image: '', category: 'Air', description: '', mode: 'affiliate', buy_link: '' });
+      products.push({ 
+        title: '', 
+        id: '', 
+        image: '', 
+        category: 'Air', 
+        description: '', 
+        buy_link: '', 
+        mode: 'affiliate' // ✅ default
+      });
       renderProducts();
     }
 
@@ -209,6 +202,7 @@
         });
         if (!res.ok) throw new Error('Save failed');
 
+        // ✅ Reload immediately after save
         await loadFromGit();
         document.getElementById('status').textContent = 'Saved ✅ and reloaded';
       } catch (e) {
@@ -216,6 +210,7 @@
       }
     }
 
+    // ✅ Auto-load on page open
     window.addEventListener('DOMContentLoaded', loadFromGit);
   </script>
 </body>
