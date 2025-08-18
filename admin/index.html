@@ -212,10 +212,41 @@
       }
     }
 
-    // ✅ AI Placeholder
+    // ✅ AI Generator (local demo)
     function autoGenerateProducts() {
-      document.getElementById('status').textContent = "🤖 AI feature coming soon...";
-      // Later we can connect this to real AI (OpenAI API or local generator)
+      const sampleProducts = [
+        {
+          title: "Eco Air Purifier",
+          id: "AIR001",
+          image: "https://via.placeholder.com/150/00FF00/FFFFFF?text=Air+Purifier",
+          category: "Air",
+          description: "A smart eco-friendly air purifier with silent mode.",
+          buy_link: "https://example.com/air-purifier",
+          mode: "affiliate"
+        },
+        {
+          title: "Memory Foam Pillow",
+          id: "SLEEP001",
+          image: "https://via.placeholder.com/150/0000FF/FFFFFF?text=Pillow",
+          category: "Sleep",
+          description: "Ultra-comfort memory foam pillow for better sleep.",
+          buy_link: "https://example.com/pillow",
+          mode: "direct"
+        },
+        {
+          title: "Aloe Vera Body Lotion",
+          id: "BODY001",
+          image: "https://via.placeholder.com/150/FF00FF/FFFFFF?text=Lotion",
+          category: "Body",
+          description: "Hydrating lotion made with natural aloe vera extract.",
+          buy_link: "https://example.com/lotion",
+          mode: "affiliate"
+        }
+      ];
+
+      products = products.concat(sampleProducts);
+      renderProducts();
+      document.getElementById('status').textContent = "🤖 AI generated 3 demo products!";
     }
 
     // ✅ Auto-load on page open
