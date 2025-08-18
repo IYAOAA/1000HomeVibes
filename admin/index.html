@@ -95,7 +95,8 @@
     <button onclick="addProduct()">+ Add Product</button>
     <button onclick="saveToGit()">💾 Save to GitHub</button>
     <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
-  </div
+  </div> <!-- ✅ properly closed -->
+
   <div id="products"></div>
   <pre id="status"></pre>
 
@@ -209,6 +210,12 @@
       } catch (e) {
         document.getElementById('status').textContent = 'Error saving ❌';
       }
+    }
+
+    // ✅ AI Placeholder
+    function autoGenerateProducts() {
+      document.getElementById('status').textContent = "🤖 AI feature coming soon...";
+      // Later we can connect this to real AI (OpenAI API or local generator)
     }
 
     // ✅ Auto-load on page open
