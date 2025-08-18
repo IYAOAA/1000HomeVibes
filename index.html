@@ -1,15 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>1000 Home Vibes</title>
-  <link rel="icon" href="assets/favicon.ico" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1000HomeVibes – Products</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #013220;
+    }
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: white;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .product img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .product h2 {
+      margin: 10px 0;
+      color: #013220;
+    }
+    .product p {
+      color: #333;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-affiliate {
+      background: gold;
+      color: #013220;
+    }
+    .btn-direct {
+      background: #013220;
+      color: #fff;
+    }
+  </style>
 </head>
-<body class="bg-green-950 text-white text-center font-sans">
-  <h1 class="text-4xl font-bold text-yellow-100 mt-20">Welcome to 1000 Home Vibes</h1>
-  <p class="text-yellow-200 mt-4">Your wellness starts at home.</p>
-  <a href="products.html" class="mt-8 inline-block bg-yellow-500 text-black px-6 py-3 rounded hover:bg-yellow-400">View Products</a>
+<body>
+  <h1>🛒 1000HomeVibes Store</h1>
+  <div id="products"></div>
+
+  <script>
+    const API_BASE = "https://one000homevibes.onrender.com";
+
+    async function loadProducts() {
+      try {
+        const res = await fetch(API_BASE + "/products");
+        const products = await res.json();
+        render(products);
+      } catch (e) {
+        document.getElementById("products").innerHTML = "<p>❌ Failed to load products</p>";
+      }
+    }
+
+    function render(products) {
+      const container = document.getElementById("products");
+      container.innerHTML = "";
+
+      products.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${p.image}" alt="${p.title}">
+          <h2>${p.title}</h2>
+          <p>${p.description}</p>
+          <p><strong>Category:</strong> ${p.category}</p>
+          ${
+            p.mode === "direct"
+              ? `<button class="btn btn-direct" onclick="addToCart('${p.id}')">🛍 Add to Cart</button>`
+              : `<a href="${p.buy_link}" target="_blank" class="btn btn-affiliate">🔗 Buy Now</a>`
+          }
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addToCart(id) {
+      alert("🛒 Added product " + id + " to cart (checkout coming soon)");
+    }
+
+    window.addEventListener("DOMContentLoaded", loadProducts);
+  </script>
 </body>
 </html>
