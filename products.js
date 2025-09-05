@@ -1,18 +1,11 @@
 let allProducts = [];
 let currentCategory = "All";
 
-// ✅ Fetch products from backend API instead of local file
-fetch("https://your-backend-url.com/products")
+fetch('products.json')
   .then(res => res.json())
   .then(products => {
     allProducts = products;
     displayProducts(products);
-  })
-  .catch(err => {
-    console.error("❌ Failed to load products:", err);
-    document.getElementById("product-grid").innerHTML = `
-      <p class="text-red-400">Failed to load products. Please try again later.</p>
-    `;
   });
 
 function displayProducts(products) {
@@ -55,9 +48,9 @@ function applyFilters() {
 // 🔍 Track Amazon button click
 function trackClick(productTitle) {
   if (typeof gtag === "function") {
-    gtag("event", "click", {
-      event_category: "Product",
-      event_label: productTitle
+    gtag('event', 'click', {
+      'event_category': 'Product',
+      'event_label': productTitle
     });
   }
 }
