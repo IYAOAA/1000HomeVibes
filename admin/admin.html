@@ -38,6 +38,21 @@
     </div>
   </div>
 
+  <!-- 🔹 EDIT MODAL -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
+    <div class="bg-white text-black p-6 rounded-lg w-96">
+      <h2 class="text-xl font-bold mb-4">Edit Product</h2>
+      <input id="editTitle" class="p-2 block w-full mb-2 border rounded" placeholder="Title" />
+      <textarea id="editDescription" class="p-2 block w-full mb-2 border rounded" placeholder="Description"></textarea>
+      <input id="editImage" class="p-2 block w-full mb-2 border rounded" placeholder="Image URL" />
+      <input id="editLink" class="p-2 block w-full mb-2 border rounded" placeholder="Amazon Link" />
+      <div class="flex justify-end gap-2">
+        <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        <button id="saveEdit" class="bg-yellow-500 text-black px-4 py-2 rounded">Save</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   // helpers
   function token() { return localStorage.getItem('admin_token'); }
@@ -118,104 +133,90 @@
       console.error(err);
     }
   });
-  // modal logic
-const modal = document.getElementById('editModal');
-const closeModalBtn = document.getElementById('closeModal');
-const saveEditBtn = document.getElementById('saveEditBtn');
-let currentEditId = null;
 
-// open modal with product data
-function openEditModal(product) {
-  currentEditId = product.id;
-  document.getElementById('editTitle').value = product.title || '';
-  document.getElementById('editDescription').value = product.description || '';
-  modal.classList.remove('hidden');
-}
-
-// close modal
-function closeEditModal() {
-  modal.classList.add('hidden');
-  currentEditId = null;
-}
-
-closeModalBtn.addEventListener('click', closeEditModal);
-
-// save edit
-saveEditBtn.addEventListener('click', async () => {
-  if (!currentEditId) return;
-  const newTitle = document.getElementById('editTitle').value.trim();
-  const newDesc = document.getElementById('editDescription').value.trim();
-  const payload = {};
-  if (newTitle) payload.title = newTitle;
-  if (newDesc) payload.description = newDesc;
-
-  try {
-    const res = await fetch(BACKEND_URL + '/api/products/' + currentEditId, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) { alert('Update failed'); return; }
-    closeEditModal();
-    loadProducts();
-  } catch (err) {
-    console.error(err);
-    alert('Error saving update');
-  }
-});
-
- // load products
-async function loadProducts() {
-  try {
-    const res = await fetch(BACKEND_URL + '/api/products');
-    const products = await res.json();
-    const container = document.getElementById('productsList');
-    container.innerHTML = '';
-    products.forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'bg-white text-black p-4 rounded flex gap-4 items-start';
-      el.innerHTML = `
-        <img src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 object-cover rounded" />
-        <div class="flex-1">
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="font-bold">${escapeHtml(p.title)}</h3>
-              <p class="text-sm">${escapeHtml(p.description || '')}</p>
-              <a class="text-xs underline" href="${p.link}" target="_blank">View on Amazon</a>
-            </div>
-            <div class="space-y-2">
-              <button data-id="${p.id}" class="editBtn bg-blue-500 px-3 py-1 rounded text-white">Edit</button>
-              <button data-id="${p.id}" class="delBtn bg-red-600 px-3 py-1 rounded text-white">Delete</button>
+  // load products
+  async function loadProducts() {
+    try {
+      const res = await fetch(BACKEND_URL + '/api/products');
+      const products = await res.json();
+      const container = document.getElementById('productsList');
+      container.innerHTML = '';
+      products.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'bg-white text-black p-4 rounded flex gap-4 items-start';
+        el.innerHTML = `
+          <img src="${p.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 object-cover rounded" />
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-bold">${escapeHtml(p.title)}</h3>
+                <p class="text-sm">${escapeHtml(p.description || '')}</p>
+                <a class="text-xs underline" href="${p.link}" target="_blank">View on Amazon</a>
+              </div>
+              <div class="space-y-2">
+                <button data-id="${p.id}" data-product='${JSON.stringify(p)}' class="editBtn bg-blue-500 px-3 py-1 rounded text-white">Edit</button>
+                <button data-id="${p.id}" class="delBtn bg-red-600 px-3 py-1 rounded text-white">Delete</button>
+              </div>
             </div>
           </div>
-        </div>
-      `;
-      container.appendChild(el);
-    });
+        `;
+        container.appendChild(el);
+      });
 
-    // delete
-    document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (ev) => {
-      const id = ev.currentTarget.dataset.id;
-      if (!confirm('Delete this product?')) return;
-      const res = await fetch(BACKEND_URL + '/api/products/' + id, { method: 'DELETE', headers: authHeaders() });
-      if (!res.ok) { alert('Delete failed'); return; }
-      loadProducts();
-    }));
+      // delete
+      document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.id;
+        if (!confirm('Delete this product?')) return;
+        const res = await fetch(BACKEND_URL + '/api/products/' + id, { method: 'DELETE', headers: authHeaders() });
+        if (!res.ok) { alert('Delete failed'); return; }
+        loadProducts();
+      }));
 
-    // edit → open modal
-    document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', (ev) => {
-      const id = ev.currentTarget.dataset.id;
-      const product = products.find(p => p.id == id);
-      if (product) openEditModal(product);
-    }));
-
-  } catch (err) {
-    console.error(err);
-    alert('Could not load products');
+      // edit
+      document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', (ev) => {
+        const product = JSON.parse(ev.currentTarget.dataset.product);
+        document.getElementById('editTitle').value = product.title;
+        document.getElementById('editDescription').value = product.description || '';
+        document.getElementById('editImage').value = product.image || '';
+        document.getElementById('editLink').value = product.link || '';
+        document.getElementById('saveEdit').dataset.id = product.id;
+        document.getElementById('editModal').classList.remove('hidden');
+      }));
+    } catch (err) {
+      console.error(err);
+      alert('Could not load products');
+    }
   }
-}
 
-  // small escape
+  // modal events
+  document.getElementById('cancelEdit').addEventListener('click', () => {
+    document.getElementById('editModal').classList.add('hidden');
+  });
+
+  document.getElementById('saveEdit').addEventListener('click', async () => {
+    const id = document.getElementById('saveEdit').dataset.id;
+    const payload = {
+      title: document.getElementById('editTitle').value.trim(),
+      description: document.getElementById('editDescription').value.trim(),
+      image: document.getElementById('editImage').value.trim(),
+      link: document.getElementById('editLink').value.trim()
+    };
+    try {
+      const res = await fetch(BACKEND_URL + '/api/products/' + id, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Update failed');
+      document.getElementById('editModal').classList.add('hidden');
+      loadProducts();
+    } catch (err) {
+      alert('Error: ' + err.message);
+      console.error(err);
+    }
+  });
+
+  // escape HTML
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   // init
