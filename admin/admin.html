@@ -38,6 +38,21 @@
     </div>
   </div>
 
+  <!-- Edit Product Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white text-black p-6 rounded-xl w-full max-w-md">
+      <h2 class="text-xl font-bold mb-4">Edit Product</h2>
+      <input id="editTitle" class="p-2 w-full mb-2 border rounded" placeholder="Title" />
+      <input id="editDescription" class="p-2 w-full mb-2 border rounded" placeholder="Description" />
+      <input id="editImage" class="p-2 w-full mb-2 border rounded" placeholder="Image URL" />
+      <input id="editLink" class="p-2 w-full mb-2 border rounded" placeholder="Amazon link" />
+      <div class="flex justify-end gap-2">
+        <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        <button id="saveEdit" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   // helpers
   function token() { return localStorage.getItem('admin_token'); }
@@ -119,6 +134,47 @@
     }
   });
 
+  // edit modal helpers
+  let editingProductId = null;
+
+  function openEditModal(product) {
+    editingProductId = product.id;
+    document.getElementById('editTitle').value = product.title || '';
+    document.getElementById('editDescription').value = product.description || '';
+    document.getElementById('editImage').value = product.image || '';
+    document.getElementById('editLink').value = product.link || '';
+    document.getElementById('editModal').classList.remove('hidden');
+  }
+
+  function closeEditModal() {
+    editingProductId = null;
+    document.getElementById('editModal').classList.add('hidden');
+  }
+
+  document.getElementById('cancelEdit').addEventListener('click', closeEditModal);
+  document.getElementById('saveEdit').addEventListener('click', async () => {
+    if (!editingProductId) return;
+    const payload = {
+      title: document.getElementById('editTitle').value.trim(),
+      description: document.getElementById('editDescription').value.trim(),
+      image: document.getElementById('editImage').value.trim(),
+      link: document.getElementById('editLink').value.trim(),
+    };
+
+    try {
+      const res = await fetch(BACKEND_URL + '/api/products/' + editingProductId, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Update failed');
+      closeEditModal();
+      loadProducts();
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  });
+
   // load products
   async function loadProducts() {
     try {
@@ -148,6 +204,7 @@
         container.appendChild(el);
       });
 
+      // delete handler
       document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (ev) => {
         const id = ev.currentTarget.dataset.id;
         if (!confirm('Delete this product?')) return;
@@ -156,22 +213,11 @@
         loadProducts();
       }));
 
+      // edit handler (open modal)
       document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', async (ev) => {
         const id = ev.currentTarget.dataset.id;
-        const newTitle = prompt('New title (leave blank to keep):');
-        if (newTitle === null) return;
-        const newDesc = prompt('New description (leave blank to keep):');
-        const payload = {};
-        if (newTitle) payload.title = newTitle;
-        if (newDesc) payload.description = newDesc;
-        if (Object.keys(payload).length === 0) return;
-        const res = await fetch(BACKEND_URL + '/api/products/' + id, {
-          method: 'PUT',
-          headers: authHeaders(),
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) { alert('Update failed'); return; }
-        loadProducts();
+        const product = products.find(p => p.id == id);
+        if (product) openEditModal(product);
       }));
 
     } catch (err) {
