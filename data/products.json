@@ -1,0 +1,18 @@
+[
+  {
+    "id": "demo-air-1",
+    "title": "Smart Home Air Purifier",
+    "category": "Air",
+    "image": "https://via.placeholder.com/300x200?text=Air+Purifier",
+    "description": "High-efficiency HEPA filter removes 99% of airborne particles.",
+    "buy_link": "https://example.com/demo-air"
+  },
+  {
+    "id": "demo-sleep-1",
+    "title": "Cooling Gel Memory Foam Pillow",
+    "category": "Sleep",
+    "image": "https://via.placeholder.com/300x200?text=Gel+Pillow",
+    "description": "Keeps you cool and comfortable throughout the night.",
+    "buy_link": "https://example.com/demo-sleep"
+  }
+]
