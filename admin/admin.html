@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,21 +37,6 @@
 
       <h2 class="text-2xl mb-3">Current Products</h2>
       <div id="productsList" class="space-y-4"></div>
-    </div>
-  </div>
-
-  <!-- 🔹 EDIT MODAL -->
-  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
-    <div class="bg-white text-black p-6 rounded-lg w-96">
-      <h2 class="text-xl font-bold mb-4">Edit Product</h2>
-      <input id="editTitle" class="p-2 block w-full mb-2 border rounded" placeholder="Title" />
-      <textarea id="editDescription" class="p-2 block w-full mb-2 border rounded" placeholder="Description"></textarea>
-      <input id="editImage" class="p-2 block w-full mb-2 border rounded" placeholder="Image URL" />
-      <input id="editLink" class="p-2 block w-full mb-2 border rounded" placeholder="Amazon Link" />
-      <div class="flex justify-end gap-2">
-        <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-        <button id="saveEdit" class="bg-yellow-500 text-black px-4 py-2 rounded">Save</button>
-      </div>
     </div>
   </div>
 
@@ -154,7 +141,7 @@
                 <a class="text-xs underline" href="${p.link}" target="_blank">View on Amazon</a>
               </div>
               <div class="space-y-2">
-                <button data-id="${p.id}" data-product='${JSON.stringify(p)}' class="editBtn bg-blue-500 px-3 py-1 rounded text-white">Edit</button>
+                <button data-id="${p.id}" class="editBtn bg-blue-500 px-3 py-1 rounded text-white">Edit</button>
                 <button data-id="${p.id}" class="delBtn bg-red-600 px-3 py-1 rounded text-white">Delete</button>
               </div>
             </div>
@@ -163,7 +150,6 @@
         container.appendChild(el);
       });
 
-      // delete
       document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (ev) => {
         const id = ev.currentTarget.dataset.id;
         if (!confirm('Delete this product?')) return;
@@ -172,51 +158,31 @@
         loadProducts();
       }));
 
-      // edit
-      document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', (ev) => {
-        const product = JSON.parse(ev.currentTarget.dataset.product);
-        document.getElementById('editTitle').value = product.title;
-        document.getElementById('editDescription').value = product.description || '';
-        document.getElementById('editImage').value = product.image || '';
-        document.getElementById('editLink').value = product.link || '';
-        document.getElementById('saveEdit').dataset.id = product.id;
-        document.getElementById('editModal').classList.remove('hidden');
+      document.querySelectorAll('.editBtn').forEach(b => b.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.id;
+        const newTitle = prompt('New title (leave blank to keep):');
+        if (newTitle === null) return;
+        const newDesc = prompt('New description (leave blank to keep):');
+        const payload = {};
+        if (newTitle) payload.title = newTitle;
+        if (newDesc) payload.description = newDesc;
+        if (Object.keys(payload).length === 0) return;
+        const res = await fetch(BACKEND_URL + '/api/products/' + id, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) { alert('Update failed'); return; }
+        loadProducts();
       }));
+
     } catch (err) {
       console.error(err);
       alert('Could not load products');
     }
   }
 
-  // modal events
-  document.getElementById('cancelEdit').addEventListener('click', () => {
-    document.getElementById('editModal').classList.add('hidden');
-  });
-
-  document.getElementById('saveEdit').addEventListener('click', async () => {
-    const id = document.getElementById('saveEdit').dataset.id;
-    const payload = {
-      title: document.getElementById('editTitle').value.trim(),
-      description: document.getElementById('editDescription').value.trim(),
-      image: document.getElementById('editImage').value.trim(),
-      link: document.getElementById('editLink').value.trim()
-    };
-    try {
-      const res = await fetch(BACKEND_URL + '/api/products/' + id, {
-        method: 'PUT',
-        headers: authHeaders(),
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error('Update failed');
-      document.getElementById('editModal').classList.add('hidden');
-      loadProducts();
-    } catch (err) {
-      alert('Error: ' + err.message);
-      console.error(err);
-    }
-  });
-
-  // escape HTML
+  // small escape
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   // init
