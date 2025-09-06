@@ -26,26 +26,23 @@
       transition: all 0.2s;
     }
     .nav a:hover { background: #ffd700; }
-    .product {
+    .product-card {
       border: 2px solid gold;
-      padding: 15px;
-      margin: 15px 0;
+      padding: 10px;
+      margin: 10px 0;
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    label { display: block; margin-top: 10px; font-weight: bold; color: gold; }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+    .product-info { flex: 1; margin-left: 10px; }
+    img.thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid gold; }
     button {
       background-color: gold;
       color: #013220;
-      padding: 10px 15px;
-      margin: 10px 5px 0 0;
+      padding: 6px 10px;
+      margin: 2px;
       border: none;
       border-radius: 5px;
       font-weight: bold;
@@ -53,7 +50,31 @@
     }
     button:hover { background-color: #ffd700; }
     #controls { text-align: center; margin-bottom: 20px; }
-    img.preview { max-width: 150px; margin-top: 8px; border: 1px solid gold; border-radius: 8px; display: block; }
+    /* Modal */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0; top: 0; 
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      align-items: center; 
+      justify-content: center;
+    }
+    .modal-content {
+      background: #fff;
+      color: #013220;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%; max-width: 500px;
+    }
+    .modal-content label { font-weight: bold; margin-top: 10px; display: block; }
+    .modal-content input, .modal-content textarea, .modal-content select {
+      width: 100%; margin-top: 4px; padding: 6px;
+    }
+    .close-btn {
+      float: right; cursor: pointer; font-size: 20px; font-weight: bold; color: red;
+    }
   </style>
 </head>
 <body>
@@ -74,59 +95,100 @@
   <div id="products"></div>
   <pre id="status"></pre>
 
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>Edit Product</h2>
+      <label>Title</label>
+      <input id="editTitle">
+
+      <label>Product ID</label>
+      <input id="editId">
+
+      <label>Image URL</label>
+      <input id="editImage">
+
+      <label>Category</label>
+      <select id="editCategory">
+        <option>Air</option>
+        <option>Sleep</option>
+        <option>Body</option>
+      </select>
+
+      <label>Description</label>
+      <textarea id="editDescription" rows="3"></textarea>
+
+      <label>Mode</label>
+      <select id="editMode">
+        <option value="affiliate">Affiliate</option>
+        <option value="direct">Direct</option>
+      </select>
+
+      <label>Buy Link</label>
+      <input id="editLink">
+
+      <button onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+
   <script>
     const API_BASE = 'https://one000homevibes.onrender.com';
     const ADMIN_SECRET = ''; // leave empty to prompt
-
     let products = [];
+    let editingIndex = null;
 
     function renderProducts() {
       const container = document.getElementById('products');
       container.innerHTML = '';
       products.forEach((p, i) => {
-        if (!p.mode) p.mode = "affiliate";
         const div = document.createElement('div');
-        div.className = 'product';
+        div.className = 'product-card';
         div.innerHTML = `
-          <label>Title</label>
-          <input value="${p.title || ''}" oninput="products[${i}].title=this.value">
-
-          <label>Product ID</label>
-          <input value="${p.id || ''}" oninput="products[${i}].id=this.value">
-
-          <label>Image URL</label>
-          <input value="${p.image || ''}" oninput="products[${i}].image=this.value; updatePreview(${i})">
-
-          <div id="preview-${i}">${p.image ? `<img src="${p.image}" class="preview">` : ''}</div>
-
-          <label>Category</label>
-          <select onchange="products[${i}].category=this.value">
-            <option ${p.category==='Air'?'selected':''}>Air</option>
-            <option ${p.category==='Sleep'?'selected':''}>Sleep</option>
-            <option ${p.category==='Body'?'selected':''}>Body</option>
-          </select>
-
-          <label>Description</label>
-          <textarea rows="3" oninput="products[${i}].description=this.value">${p.description || ''}</textarea>
-
-          <label>Mode</label>
-          <select onchange="products[${i}].mode=this.value">
-            <option value="affiliate" ${p.mode==='affiliate'?'selected':''}>Affiliate</option>
-            <option value="direct" ${p.mode==='direct'?'selected':''}>Direct</option>
-          </select>
-
-          <label>Buy Link</label>
-          <input value="${p.buy_link || ''}" oninput="products[${i}].buy_link=this.value">
-
-          <button onclick="removeProduct(${i})">❌ Remove</button>
+          <img src="${p.image || 'https://via.placeholder.com/80'}" class="thumb">
+          <div class="product-info">
+            <strong>${p.title || '(No title)'}</strong><br>
+            <small>${p.category || ''}</small>
+          </div>
+          <div>
+            <button onclick="openModal(${i})">✏️ Edit</button>
+            <button onclick="removeProduct(${i})">❌ Delete</button>
+          </div>
         `;
         container.appendChild(div);
       });
     }
 
-    function updatePreview(i) {
-      const container = document.getElementById(`preview-${i}`);
-      container.innerHTML = products[i].image ? `<img src="${products[i].image}" class="preview">` : '';
+    function openModal(i) {
+      editingIndex = i;
+      const p = products[i];
+      document.getElementById('editTitle').value = p.title || '';
+      document.getElementById('editId').value = p.id || '';
+      document.getElementById('editImage').value = p.image || '';
+      document.getElementById('editCategory').value = p.category || 'Air';
+      document.getElementById('editDescription').value = p.description || '';
+      document.getElementById('editMode').value = p.mode || 'affiliate';
+      document.getElementById('editLink').value = p.buy_link || '';
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+      editingIndex = null;
+    }
+
+    function saveEdit() {
+      if (editingIndex === null) return;
+      const p = products[editingIndex];
+      p.title = document.getElementById('editTitle').value;
+      p.id = document.getElementById('editId').value;
+      p.image = document.getElementById('editImage').value;
+      p.category = document.getElementById('editCategory').value;
+      p.description = document.getElementById('editDescription').value;
+      p.mode = document.getElementById('editMode').value;
+      p.buy_link = document.getElementById('editLink').value;
+      renderProducts();
+      closeModal();
     }
 
     function addProduct() {
