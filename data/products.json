@@ -16,5 +16,21 @@
     "description": "About this item\nMaximize your Potential: Enhance your active lifestyle with our Creatine Monohydrate powder, in Micronized Creatine powder, designed to support your strength and performance goals. Each serving delivers a substantial 5 grams dose, catering to both fitness enthusiasts looking to push their limits.",
     "buy_link": "https://www.amazon.com/BULKSUPPLEMENTS-COM-Creatine-Monohydrate-Powder-Unflavored/dp/B00E9M4XFI/?_encoding=UTF8&pd_rd_w=qpFWl&content-id=amzn1.sym.61d4ee60-9341-4d7a-912d-bc661951aa32&pf_rd_p=61d4ee60-9341-4d7a-912d-bc661951aa32&pf_rd_r=JHWA32TKZ9RR6T03ZXCE&pd_rd_wg=6FQfy&pd_rd_r=63e7649e-6fb2-4e96-a4e6-7a742cc4b70c&ref_=pd_hp_d_btf_cr_simh&th=1",
     "mode": "direct"
+  },
+  {
+    "id": "demo-air-1",
+    "title": "Smart Home Air Purifier",
+    "category": "Air",
+    "image": "https://placehold.co/300x200?text=Air+Purifier",
+    "description": "High-efficiency HEPA filter removes 99% of airborne particles.",
+    "buy_link": "https://example.com/demo-air"
+  },
+  {
+    "id": "demo-sleep-1",
+    "title": "Cooling Gel Memory Foam Pillow",
+    "category": "Sleep",
+    "image": "https://placehold.co/300x200?text=Gel+Pillow",
+    "description": "Keeps you cool and comfortable throughout the night.",
+    "buy_link": "https://example.com/demo-sleep"
   }
 ]
