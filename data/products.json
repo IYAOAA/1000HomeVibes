@@ -1,30 +1,5 @@
 [
   {
-    "id": "demo-air-1",
-    "title": "Smart Home Air Purifier",
-    "category": "Air",
-    "image": "https://via.placeholder.com/300x200?text=Air+Purifier",
-    "description": "High-efficiency HEPA filter removes 99% of airborne particles.",
-    "buy_link": "https://example.com/demo-air"
-  },
-  {
-    "id": "demo-sleep-1",
-    "title": "Cooling Gel Memory Foam Pillow",
-    "category": "Sleep",
-    "image": "https://via.placeholder.com/300x200?text=Gel+Pillow",
-    "description": "Keeps you cool and comfortable throughout the night.",
-    "buy_link": "https://example.com/demo-sleep"
-  },
-  {
-    "title": "Corsair Vengeance a5100 Gaming PC – Liquid Cooled AMD Ryzen™ 7 9800X3D, NVIDIA® GeForce RTX™ 5090 GPU, 64GB Dominator Titanium RGB DDR5 Memory, 2+2TB M.2 SSD – Black/Silver",
-    "id": "demo-sleep-1",
-    "image": "https://m.media-amazon.com/images/I/71ow2374sHL._AC_SY300_SX300_QL70_FMwebp_.jpg",
-    "category": "Air",
-    "description": "About this item\nGeForce RTX 50 Series Graphics Card: Powered by NVIDIA Blackwell, GeForce RTX 50 Series GPUs bring game-changing AI capabilities to gamers and creators. Multiply performance with NVIDIA DLSS 4, generate images at unprecedented speed, and unleash your creativity with NVIDIA Studio.\nLiquid-Cooled AMD Ryzen 9000 Series Processor: Powers smooth gameplay and high frame rates across a wide range of titles for avid gamers. With exceptional single-threaded and multi-threaded performance, professional content creators can now harness the full potential by enabling users to design, render, and iterate faster than ever before.\nCORSAIR iCUE LINK 2500X RGB Dual Chamber Case: Offers stunning views of your PC’s internals through tempered glass panels, along with impressive cooling performance from side, rear, roof, and bottom fans.\nCORSAIR iCUE LINK TITAN RX RGB Liquid CPU Cooler: Delivers high-performance, ultra-quiet cooling with optimized thermal performance, streamlined iCUE LINK connectivity, and dynamic RGB lighting.\n9x CORSAIR iCUE LINK RX120 RGB Fans: Features Magnetic Dome bearing for quiet operation and AirGuide technology for concentrated cooling to keep your VENGEANCE PC running at peak efficiency.",
-    "buy_link": "https://www.amazonce-a5100-Gaming-Dominator/dp/B0F8W92786/ref=sr_1_7?_encoding=UTF8&content-id=amzn1.sym.fe35c7fa-b4ae-4612-b878-056854c790ff&dib=eyJ2IjoiMSJ9.lJF-s-PBiPf9BoHAaJ_oQEFs3aeWMEWIbas1TBKnRlq31m_5KeEPDVM3zR9QSHjY7xX7V-JBMFgxwKtiozhRXDNFM8EJdeIQ68riHepsJeFZIwWBYFAJSeZtpfQhq7Zb7Ac-Yyd1TrdmdcayhMyISFo22e23zmZgU3BpVowfKeury1aMMAJXK1UsMlfaHBWUwTyfjB-tA73gxVLj0uU-F9ZvkfikzRx-5KxltmjHUxzaVX7F6JNkPZRDamXFz_tkKmZwY0GFDFQt-NodthU2Z8hB-uK5x7fdm5_s5ZHmIpY.BosUqwt9NBlgcoaRqsww-FnpXuo54ZpaHxZcaDthHOk&dib_tag=se&keywords=gaming&pd_rd_r=b9298b3e-3446-42df-a238-908380af68f7&pd_rd_w=DrfG2&pd_rd_wg=vKR0j&qid=1757195495&sr=8-7",
-    "mode": "affiliate"
-  },
-  {
     "title": "550lb Bathroom Digital Scale for Body Weight with Ultra-Wide Platform and Large LCD Display, Accurate High Precision Scale with Extra-High Capacity",
     "id": "B0C5DCTH9M",
     "image": "https://m.media-amazon.com/images/I/71hjNbnMoKL._SX425_.jpg",
