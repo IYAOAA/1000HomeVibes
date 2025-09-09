@@ -1,7 +1,7 @@
 let allProducts = [];
 let currentCategory = "All";
 
-// ✅ Fetch products from backend API instead of local file
+// ✅ Fetch products from backend API
 fetch("https://one000homevibes.onrender.com/products")
   .then(res => res.json())
   .then(products => {
@@ -18,21 +18,44 @@ fetch("https://one000homevibes.onrender.com/products")
 function displayProducts(products) {
   const grid = document.getElementById("product-grid");
   grid.innerHTML = "";
+
   products.forEach(product => {
     const card = document.createElement("div");
-    card.className = "product-card bg-white text-black p-4 rounded-xl shadow";
+    card.className = "product-card bg-white text-black p-4 rounded-xl shadow relative";
     card.dataset.category = product.category;
     card.dataset.title = product.title.toLowerCase();
+
+    // initial compact view (only image, title, price, and read specs button)
     card.innerHTML = `
       <img src="${product.image}" alt="${product.title}" class="mb-4 rounded w-full h-48 object-cover" />
-      <h3 class="font-bold text-lg">${product.title}</h3>
-      <p class="text-sm mb-2">${product.description}</p>
-      <a href="${product.buy_link}" onclick="trackClick('${product.title}')" target="_blank" class="bg-yellow-500 text-black px-4 py-2 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 font-semibold">Buy on Amazon</a>
-      <a href="product.html?id=${product.id}" class="bg-yellow-500 text-black px-4 py-2 mt-2 inline-block rounded hover:bg-yellow-400 font-semibold">Read Specs</a>
-      <a href="product-wisdom.html?id=${product.id}" class="text-yellow-300 underline mt-2 block">Why This Product?</a>
+      <h3 class="font-bold text-lg mb-1">${product.title}</h3>
+      <p class="text-green-700 font-bold mb-3">$${product.price}</p>
+      <button onclick="toggleSpecs(this)" class="bg-yellow-500 text-black px-4 py-2 mt-2 inline-block rounded hover:bg-yellow-400 font-semibold">
+        Read Specs
+      </button>
+      <div class="specs hidden mt-3 text-sm text-gray-700">
+        <p class="mb-2">${product.description}</p>
+        <a href="${product.buy_link}" onclick="trackClick('${product.title}')" target="_blank" class="bg-yellow-500 text-black px-4 py-2 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 font-semibold">Buy on Amazon</a>
+        <a href="product-wisdom.html?id=${product.id}" class="text-green-800 underline mt-2 block">Why This Product?</a>
+      </div>
     `;
+
     grid.appendChild(card);
   });
+
+  // Show "no products" message if empty
+  document.getElementById("empty-state").classList.toggle("hidden", products.length > 0);
+}
+
+function toggleSpecs(button) {
+  const specsDiv = button.nextElementSibling;
+  if (specsDiv.classList.contains("hidden")) {
+    specsDiv.classList.remove("hidden");
+    button.textContent = "Hide Specs";
+  } else {
+    specsDiv.classList.add("hidden");
+    button.textContent = "Read Specs";
+  }
 }
 
 function filterProducts(category) {
