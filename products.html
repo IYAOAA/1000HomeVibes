@@ -17,40 +17,39 @@
   </script>
 </head>
 <body class="bg-green-950 text-white font-sans">
-  <!-- Hero / Header -->
-  <header class="relative text-center py-16 bg-gradient-to-r from-green-900 via-green-800 to-green-900">
-    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-100 drop-shadow-lg">
-      Explore by Wellness Goal
-    </h1>
-    <p class="text-yellow-200 mt-3 text-lg">
-      Use filters or search to find your perfect product.
-    </p>
-    <a href="index.html" 
-       class="inline-block mt-6 bg-yellow-500 text-black px-5 py-2 rounded-lg hover:bg-yellow-400 font-semibold shadow-md transition">
-       ← Back to Home
+  <!-- Header -->
+  <header class="text-center py-10">
+    <h1 class="text-4xl font-bold text-yellow-100">Explore by Wellness Goal</h1>
+    <p class="text-yellow-200 mt-2">Find your product by category or search.</p>
+    <a href="index.html" class="inline-block mt-4 bg-yellow-500 text-black px-5 py-2 rounded-lg hover:bg-yellow-400 font-bold shadow">
+      ← Back to Home
     </a>
   </header>
 
   <!-- Search -->
-  <div class="text-center my-6">
+  <div class="text-center mb-6">
     <input type="text" id="search-input" 
            placeholder="🔍 Search products..." 
-           class="text-black px-4 py-2 rounded w-72 shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+           class="text-black px-4 py-2 rounded w-72 shadow focus:outline-none focus:ring-2 focus:ring-yellow-400">
   </div>
 
   <!-- Filters -->
   <div class="text-center mb-8">
-    <button onclick="filterProducts('All')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">All</button>
-    <button onclick="filterProducts('Air')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Air</button>
-    <button onclick="filterProducts('Sleep')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Sleep</button>
-    <button onclick="filterProducts('Body')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Body</button>
+    <button onclick="filterProducts('All')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">All</button>
+    <button onclick="filterProducts('Air')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Air</button>
+    <button onclick="filterProducts('Sleep')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Sleep</button>
+    <button onclick="filterProducts('Body')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Body</button>
+    <button onclick="filterProducts('Books')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Books</button>
+    <button onclick="filterProducts('Health')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Health</button>
+    <button onclick="filterProducts('Home')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Home</button>
+    <button onclick="filterProducts('Kitchen')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Kitchen</button>
+    <button onclick="filterProducts('Electronics')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-bold shadow">Electronics</button>
   </div>
 
   <!-- Product Grid -->
-  <section id="product-grid" class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    <!-- Loading state -->
-    <div id="loading" class="col-span-full text-center text-yellow-200 text-lg">⏳ Loading products...</div>
-    <!-- If JS clears this, products.js will fill cards -->
+  <section id="product-grid" 
+           class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+    <!-- products.js will populate -->
   </section>
 
   <!-- Empty state -->
@@ -63,7 +62,6 @@
     &copy; 2025 1000 Home Vibes | 
     <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> | 
     <a href="about.html" class="underline hover:text-yellow-400">About</a>
-    <p class="mt-2 text-xs text-yellow-400">Powered by Empire-Gatekeeper ⚡</p>
   </footer>
 
   <script src="products.js"></script>
