@@ -67,3 +67,74 @@
   <script src="products.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Products | 1000 Home Vibes</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQJ0RM6LHW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SXXGEKLZDE');
+  </script>
+
+  <style>
+    /* limit description height (foldable) */
+    .specs p {
+      max-height: 4.5em; /* about 3 lines */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .specs.expanded p {
+      max-height: none;
+    }
+  </style>
+</head>
+<body class="bg-green-950 text-white font-sans">
+  <header class="text-center py-10">
+    <h1 class="text-4xl font-bold text-yellow-100">Explore by Wellness Goal</h1>
+    <p class="text-yellow-200 mt-2">Use filters or search to find your perfect product.</p>
+    <a href="index.html" class="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">← Back to Home</a>
+  </header>
+
+  <!-- Search bar -->
+  <div class="text-center mb-4">
+    <input type="text" id="search-input" placeholder="Search products..." class="text-black px-4 py-2 rounded w-64">
+  </div>
+
+  <!-- Category filters -->
+  <div class="text-center mb-6">
+    <button onclick="filterProducts('All')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">All</button>
+    <button onclick="filterProducts('Air')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Air</button>
+    <button onclick="filterProducts('Sleep')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Sleep</button>
+    <button onclick="filterProducts('Body')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Body</button>
+    <button onclick="filterProducts('Books')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Books</button>
+    <button onclick="filterProducts('Health')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Health</button>
+    <button onclick="filterProducts('Home')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Home</button>
+    <button onclick="filterProducts('Kitchen')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Kitchen</button>
+    <button onclick="filterProducts('Electronics')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Electronics</button>
+  </div>
+
+  <!-- Product grid -->
+  <section id="product-grid" 
+    class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+  </section>
+
+  <p id="empty-state" class="text-center text-yellow-300 hidden">😔 No products found.</p>
+
+  <footer class="text-center text-yellow-200 text-sm py-6">
+    &copy; 2025 1000 Home Vibes |
+    <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> |
+    <a href="about.html" class="underline hover:text-yellow-400">About</a>
+  </footer>
+
+  <script src="products.js"></script>
+</body>
+</html>
