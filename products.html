@@ -6,40 +6,64 @@
   <link rel="icon" href="assets/favicon.ico" />
   <script src="https://cdn.tailwindcss.com"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
+
   <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YQJ0RM6LHW"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SXXGEKLZDE');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQJ0RM6LHW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SXXGEKLZDE');
+  </script>
 </head>
 <body class="bg-green-950 text-white font-sans">
-  <header class="text-center py-10">
-    <h1 class="text-4xl font-bold text-yellow-100">Explore by Wellness Goal</h1>
-    <p class="text-yellow-200 mt-2">Use filters or search to find your perfect product.</p>
-    <a href="index.html" class="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">← Back to Home</a>
+  <!-- Hero / Header -->
+  <header class="relative text-center py-16 bg-gradient-to-r from-green-900 via-green-800 to-green-900">
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-yellow-100 drop-shadow-lg">
+      Explore by Wellness Goal
+    </h1>
+    <p class="text-yellow-200 mt-3 text-lg">
+      Use filters or search to find your perfect product.
+    </p>
+    <a href="index.html" 
+       class="inline-block mt-6 bg-yellow-500 text-black px-5 py-2 rounded-lg hover:bg-yellow-400 font-semibold shadow-md transition">
+       ← Back to Home
+    </a>
   </header>
 
-  <div class="text-center mb-4">
-    <input type="text" id="search-input" placeholder="Search products..." class="text-black px-4 py-2 rounded w-64">
+  <!-- Search -->
+  <div class="text-center my-6">
+    <input type="text" id="search-input" 
+           placeholder="🔍 Search products..." 
+           class="text-black px-4 py-2 rounded w-72 shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
   </div>
 
-  <div class="text-center mb-6">
-    <button onclick="filterProducts('All')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">All</button>
-    <button onclick="filterProducts('Air')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Air</button>
-    <button onclick="filterProducts('Sleep')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Sleep</button>
-    <button onclick="filterProducts('Body')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded hover:bg-yellow-400 font-semibold">Body</button>
+  <!-- Filters -->
+  <div class="text-center mb-8">
+    <button onclick="filterProducts('All')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">All</button>
+    <button onclick="filterProducts('Air')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Air</button>
+    <button onclick="filterProducts('Sleep')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Sleep</button>
+    <button onclick="filterProducts('Body')" class="bg-yellow-500 text-black px-4 py-2 m-1 rounded-lg hover:bg-yellow-400 font-semibold shadow">Body</button>
   </div>
 
-  <section id="product-grid" class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"></section>
+  <!-- Product Grid -->
+  <section id="product-grid" class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <!-- Loading state -->
+    <div id="loading" class="col-span-full text-center text-yellow-200 text-lg">⏳ Loading products...</div>
+    <!-- If JS clears this, products.js will fill cards -->
+  </section>
 
-  <footer class="text-center text-yellow-200 text-sm py-6">
-    &copy; 2025 1000 Home Vibes |
-    <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> |
+  <!-- Empty state -->
+  <div id="empty-state" class="hidden text-center text-yellow-300 text-lg italic">
+    😔 No products found. Try another search or filter.
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-yellow-200 text-sm py-8 border-t border-yellow-700/50 mt-12">
+    &copy; 2025 1000 Home Vibes | 
+    <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> | 
     <a href="about.html" class="underline hover:text-yellow-400">About</a>
+    <p class="mt-2 text-xs text-yellow-400">Powered by Empire-Gatekeeper ⚡</p>
   </footer>
 
   <script src="products.js"></script>
