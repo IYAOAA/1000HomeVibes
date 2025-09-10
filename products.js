@@ -15,28 +15,6 @@ fetch("https://one000homevibes.onrender.com/products")
     `;
   });
 
-// 🔹 Helper to format price nicely
-function formatPrice(product) {
-  const price = parseFloat(product.price) || 0;
-  const unit = product.price_unit || "USD";
-
-  if (unit === "USD") {
-    const ngn = price * 1500; // conversion rate
-    return `
-      <p class="text-green-700 font-bold">$${price.toFixed(2)}</p>
-      <p class="text-gray-600 text-xs">₦${ngn.toLocaleString()}</p>
-    `;
-  } else if (unit === "NGN") {
-    return `<p class="text-green-700 font-bold">₦${price.toLocaleString()}</p>`;
-  } else if (unit === "EUR") {
-    return `<p class="text-green-700 font-bold">€${price.toFixed(2)}</p>`;
-  } else if (unit === "GBP") {
-    return `<p class="text-green-700 font-bold">£${price.toFixed(2)}</p>`;
-  }
-
-  return `<p class="text-green-700 font-bold">${price}</p>`;
-}
-
 function displayProducts(products) {
   const grid = document.getElementById("product-grid");
   grid.innerHTML = "";
@@ -47,12 +25,17 @@ function displayProducts(products) {
     card.dataset.category = product.category;
     card.dataset.title = product.title.toLowerCase();
 
+    // Convert USD → NGN (rate ~ 1500, adjust if needed)
+    const usdPrice = parseFloat(product.price) || 0;
+    const ngnPrice = usdPrice * 1500;
+
     // initial compact view
     card.innerHTML = `
       <img src="${product.image}" alt="${product.title}" class="mb-4 rounded w-full h-48 object-cover" />
       <h3 class="font-bold text-sm mb-1">${product.title}</h3>
       <div class="mb-3">
-        ${formatPrice(product)}
+        <p class="text-green-700 font-bold">$${usdPrice.toFixed(2)}</p>
+        <p class="text-gray-600 text-xs">₦${ngnPrice.toLocaleString()}</p>
       </div>
       <button onclick="toggleSpecs(this)" class="bg-yellow-500 text-black px-3 py-1 mt-2 inline-block rounded hover:bg-yellow-400 text-sm font-semibold">
         Read Specs
@@ -93,7 +76,8 @@ document.getElementById("search-input").addEventListener("input", applyFilters);
 function applyFilters() {
   const keyword = document.getElementById("search-input").value.toLowerCase();
   const filtered = allProducts.filter(p => {
-    const matchCategory = currentCategory === "All" || p.category === currentCategory;
+    const productCategory = (p.category || "").toLowerCase();
+    const matchCategory = currentCategory === "All" || productCategory === currentCategory.toLowerCase();
     const matchKeyword = p.title.toLowerCase().includes(keyword);
     return matchCategory && matchKeyword;
   });
