@@ -133,6 +133,9 @@
       <label>Buy Link</label>
       <input id="editLink">
 
+      <label>Price (USD)</label>
+      <input id="editPrice" type="number" step="0.01">
+
       <button onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
@@ -153,7 +156,8 @@
           <img src="${p.image || 'https://via.placeholder.com/80'}" class="thumb">
           <div class="product-info">
             <strong>${p.title || '(No title)'}</strong><br>
-            <small>${p.category || ''}</small>
+            <small>${p.category || ''}</small><br>
+            <small>💲 ${p.price ? '$' + p.price : 'N/A'}</small>
           </div>
           <div>
             <button onclick="openModal(${i})">✏️ Edit</button>
@@ -174,6 +178,7 @@
       document.getElementById('editDescription').value = p.description || '';
       document.getElementById('editMode').value = p.mode || 'affiliate';
       document.getElementById('editLink').value = p.buy_link || '';
+      document.getElementById('editPrice').value = p.price || '';
       document.getElementById('editModal').style.display = 'flex';
     }
 
@@ -192,12 +197,17 @@
       p.description = document.getElementById('editDescription').value;
       p.mode = document.getElementById('editMode').value;
       p.buy_link = document.getElementById('editLink').value;
+      p.price = parseFloat(document.getElementById('editPrice').value) || null;
       renderProducts();
       closeModal();
     }
 
     function addProduct() {
-      products.push({ title:'', id:'', image:'', category:'Air', description:'', buy_link:'', mode:'affiliate' });
+      products.push({ 
+        title:'', id:'', image:'', category:'Air', 
+        description:'', buy_link:'', mode:'affiliate',
+        price:null 
+      });
       renderProducts();
     }
 
