@@ -34,7 +34,9 @@
     "category": "Book",
     "description": "",
     "buy_link": "https://www.amazon.com/Those-Knew-Loved-Before/dp/B0FMPQ5H4Y/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "price": "",
+    "price_unit": "USD"
   },
   {
     "title": "ASUS TUF Gaming GeForce RTX",
