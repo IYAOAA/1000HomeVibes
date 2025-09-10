@@ -26,22 +26,45 @@
     .specs.expanded p {
       max-height: none;
     }
+
+    /* product card font adjustments */
+    .product-card h3 { font-size: 0.95rem; }
+    .product-card p { font-size: 0.8rem; }
   </style>
 </head>
 <body class="bg-green-950 text-white font-sans">
   <header class="text-center py-10">
-    <h1 class="text-4xl font-bold text-yellow-100">Explore by Wellness Goal</h1>
+    <h1 class="text-3xl font-bold text-yellow-100">Explore by Wellness Goal</h1>
     <p class="text-yellow-200 mt-2">Use filters or search to find your perfect product.</p>
     <a href="index.html" class="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">← Back to Home</a>
   </header>
 
   <!-- Main layout with sidebar + content -->
-  <div class="flex max-w-7xl mx-auto px-6">
+  <div class="flex flex-col sm:flex-row max-w-7xl mx-auto px-6">
     
-    <!-- Sidebar categories -->
-    <aside class="w-40 pr-6 hidden sm:block">
-      <h2 class="font-bold mb-3 text-yellow-100">Categories</h2>
-      <ul class="space-y-2 text-sm">
+    <!-- Sidebar / Dropdown -->
+    <aside class="sm:w-48 sm:pr-6 mb-6 sm:mb-0">
+      <!-- Search inside sidebar -->
+      <input type="text" id="search-input" placeholder="Search products..." 
+        class="text-black px-3 py-2 rounded w-full mb-4 text-sm">
+
+      <!-- Mobile dropdown -->
+      <div class="sm:hidden mb-4">
+        <select onchange="filterProducts(this.value)" class="text-black px-3 py-2 rounded w-full">
+          <option value="All">All</option>
+          <option value="Air">Air</option>
+          <option value="Sleep">Sleep</option>
+          <option value="Body">Body</option>
+          <option value="Books">Books</option>
+          <option value="Health">Health</option>
+          <option value="Home">Home</option>
+          <option value="Kitchen">Kitchen</option>
+          <option value="Electronics">Electronics</option>
+        </select>
+      </div>
+
+      <!-- Desktop categories -->
+      <ul class="hidden sm:block space-y-2 text-sm">
         <li><a href="#" onclick="filterProducts('All')" class="block hover:text-yellow-400">All</a></li>
         <li><a href="#" onclick="filterProducts('Air')" class="block hover:text-yellow-400">Air</a></li>
         <li><a href="#" onclick="filterProducts('Sleep')" class="block hover:text-yellow-400">Sleep</a></li>
@@ -56,15 +79,9 @@
 
     <!-- Main product section -->
     <main class="flex-1">
-      <!-- Search bar -->
-      <div class="text-center mb-4">
-        <input type="text" id="search-input" placeholder="Search products..." 
-          class="text-black px-4 py-2 rounded w-64">
-      </div>
-
       <!-- Product grid -->
       <section id="product-grid" 
-        class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 py-6">
+        class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-5 py-6">
       </section>
 
       <p id="empty-state" class="text-center text-yellow-300 hidden">😔 No products found.</p>
