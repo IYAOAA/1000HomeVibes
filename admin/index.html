@@ -106,8 +106,17 @@
       <label>Product ID</label>
       <input id="editId">
 
-      <label>Image URL</label>
+      <label>Main Image URL</label>
       <input id="editImage">
+
+      <label>Extra Image 2 (optional)</label>
+      <input id="editImage2">
+
+      <label>Extra Image 3 (optional)</label>
+      <input id="editImage3">
+
+      <label>Video URL (optional)</label>
+      <input id="editVideo">
 
       <label>Category</label>
       <select id="editCategory">
@@ -119,21 +128,11 @@
         <option>Home</option>
         <option>Kitchen</option>
         <option>Electronics</option>
+        <option>Other</option>
       </select>
 
       <label>Description</label>
       <textarea id="editDescription" rows="3"></textarea>
-
-      <label>Price</label>
-      <input id="editPrice" type="number" step="0.01" placeholder="Enter price">
-
-      <label>Price Unit</label>
-      <select id="editPriceUnit">
-        <option value="USD">$ – US Dollar</option>
-        <option value="NGN">₦ – Nigerian Naira</option>
-        <option value="EUR">€ – Euro</option>
-        <option value="GBP">£ – British Pound</option>
-      </select>
 
       <label>Mode</label>
       <select id="editMode">
@@ -181,10 +180,11 @@
       document.getElementById('editTitle').value = p.title || '';
       document.getElementById('editId').value = p.id || '';
       document.getElementById('editImage').value = p.image || '';
-      document.getElementById('editCategory').value = p.category || 'Air';
+      document.getElementById('editImage2').value = p.image2 || '';
+      document.getElementById('editImage3').value = p.image3 || '';
+      document.getElementById('editVideo').value = p.video || '';
+      document.getElementById('editCategory').value = p.category || 'Other';
       document.getElementById('editDescription').value = p.description || '';
-      document.getElementById('editPrice').value = p.price || '';
-      document.getElementById('editPriceUnit').value = p.price_unit || 'USD';
       document.getElementById('editMode').value = p.mode || 'affiliate';
       document.getElementById('editLink').value = p.buy_link || '';
       document.getElementById('editModal').style.display = 'flex';
@@ -201,10 +201,15 @@
       p.title = document.getElementById('editTitle').value;
       p.id = document.getElementById('editId').value;
       p.image = document.getElementById('editImage').value;
-      p.category = document.getElementById('editCategory').value;
+      p.image2 = document.getElementById('editImage2').value;
+      p.image3 = document.getElementById('editImage3').value;
+      p.video = document.getElementById('editVideo').value;
+
+      // ✅ Clean category
+      let rawCategory = document.getElementById('editCategory').value || 'Other';
+      p.category = rawCategory.trim().charAt(0).toUpperCase() + rawCategory.trim().slice(1).toLowerCase();
+
       p.description = document.getElementById('editDescription').value;
-      p.price = document.getElementById('editPrice').value;
-      p.price_unit = document.getElementById('editPriceUnit').value;
       p.mode = document.getElementById('editMode').value;
       p.buy_link = document.getElementById('editLink').value;
       renderProducts();
@@ -213,9 +218,8 @@
 
     function addProduct() {
       products.push({ 
-        title:'', id:'', image:'', category:'Air', description:'', 
-        price:'', price_unit:'USD',
-        buy_link:'', mode:'affiliate' 
+        title:'', id:'', image:'', image2:'', image3:'', video:'',
+        category:'Other', description:'', buy_link:'', mode:'affiliate' 
       });
       renderProducts();
     }
