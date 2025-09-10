@@ -25,17 +25,25 @@ function displayProducts(products) {
     card.dataset.category = product.category;
     card.dataset.title = product.title.toLowerCase();
 
-    // initial compact view (only image, title, price, and read specs button)
+    // Convert USD → NGN (rate ~ 1500, adjust if needed)
+    const usdPrice = parseFloat(product.price) || 0;
+    const ngnPrice = usdPrice * 1500;
+
+    // initial compact view
     card.innerHTML = `
       <img src="${product.image}" alt="${product.title}" class="mb-4 rounded w-full h-48 object-cover" />
-      <h3 class="font-bold text-lg mb-1">${product.title}</h3>
-      <p class="text-green-700 font-bold mb-3">$${product.price}</p>
-      <button onclick="toggleSpecs(this)" class="bg-yellow-500 text-black px-4 py-2 mt-2 inline-block rounded hover:bg-yellow-400 font-semibold">
+      <h3 class="font-bold text-sm mb-1">${product.title}</h3>
+      <div class="mb-3">
+        <p class="text-green-700 font-bold">$${usdPrice.toFixed(2)}</p>
+        <p class="text-gray-600 text-xs">₦${ngnPrice.toLocaleString()}</p>
+      </div>
+      <button onclick="toggleSpecs(this)" class="bg-yellow-500 text-black px-3 py-1 mt-2 inline-block rounded hover:bg-yellow-400 text-sm font-semibold">
         Read Specs
       </button>
-      <div class="specs hidden mt-3 text-sm text-gray-700">
+      <div class="specs hidden mt-3 text-xs text-gray-700">
         <p class="mb-2">${product.description}</p>
-        <a href="${product.buy_link}" onclick="trackClick('${product.title}')" target="_blank" class="bg-yellow-500 text-black px-4 py-2 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 font-semibold">Buy on Amazon</a>
+        <a href="${product.buy_link}" onclick="trackClick('${product.title}')" target="_blank" 
+           class="bg-yellow-500 text-black px-3 py-1 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 text-sm font-semibold">Buy on Amazon</a>
         <a href="product-wisdom.html?id=${product.id}" class="text-green-800 underline mt-2 block">Why This Product?</a>
       </div>
     `;
