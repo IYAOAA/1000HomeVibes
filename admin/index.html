@@ -11,7 +11,22 @@
       color: #f5f5f5;
       margin: 0;
       padding: 20px;
+      display: flex;
     }
+    /* Left content */
+    .main {
+      flex: 3;
+      margin-right: 20px;
+    }
+    /* Sidebar */
+    .sidebar {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border-left: 2px solid gold;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .sidebar h2 { color: gold; text-align: center; }
     h1 { color: gold; text-align: center; }
     .nav { text-align: center; margin-bottom: 20px; }
     .nav a {
@@ -60,6 +75,7 @@
       background: rgba(0,0,0,0.7);
       align-items: center; 
       justify-content: center;
+      overflow-y: auto; /* scroll entire modal on small screens */
     }
     .modal-content {
       background: #fff;
@@ -67,6 +83,8 @@
       padding: 20px;
       border-radius: 10px;
       width: 90%; max-width: 500px;
+      max-height: 90vh; /* prevent giant modals */
+      overflow-y: auto; /* scroll inside */
     }
     .modal-content label { font-weight: bold; margin-top: 10px; display: block; }
     .modal-content input, .modal-content textarea, .modal-content select {
@@ -75,25 +93,51 @@
     .close-btn {
       float: right; cursor: pointer; font-size: 20px; font-weight: bold; color: red;
     }
+    .widget {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      text-align: center;
+    }
+    iframe { width: 100%; border: none; }
   </style>
 </head>
 <body>
-  <h1>📦 Product Manager – 1000HomeVibes</h1>
+  <div class="main">
+    <h1>📦 Product Manager – 1000HomeVibes</h1>
 
-  <div class="nav">
-    <a href="index.html">📦 Product Manager</a>
-    <a href="analytics.html">📊 View Analytics</a>
+    <div class="nav">
+      <a href="index.html">📦 Product Manager</a>
+      <a href="analytics.html">📊 View Analytics</a>
+    </div>
+
+    <div id="controls">
+      <button onclick="loadFromGit()">Reload from GitHub</button>
+      <button onclick="addProduct()">+ Add Product</button>
+      <button onclick="saveToGit()">💾 Save to GitHub</button>
+      <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
+    </div>
+
+    <div id="products"></div>
+    <pre id="status"></pre>
   </div>
 
-  <div id="controls">
-    <button onclick="loadFromGit()">Reload from GitHub</button>
-    <button onclick="addProduct()">+ Add Product</button>
-    <button onclick="saveToGit()">💾 Save to GitHub</button>
-    <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
+  <div class="sidebar">
+    <h2>📅 Tools</h2>
+    <div class="widget">
+      <h3>Calendar</h3>
+      <iframe src="https://calendar.google.com/calendar/embed?showTitle=0&mode=MONTH&height=200" height="200"></iframe>
+    </div>
+    <div class="widget">
+      <h3>Clock</h3>
+      <div id="clock" style="font-size:1.2em;font-weight:bold;"></div>
+    </div>
+    <div class="widget">
+      <h3>Calculator</h3>
+      <iframe src="https://www.online-calculator.com/simple-calculator/" height="200"></iframe>
+    </div>
   </div>
-
-  <div id="products"></div>
-  <pre id="status"></pre>
 
   <!-- Edit Modal -->
   <div id="editModal" class="modal">
@@ -148,6 +192,12 @@
   </div>
 
   <script>
+    // clock update
+    setInterval(() => {
+      const d = new Date();
+      document.getElementById('clock').textContent = d.toLocaleTimeString();
+    }, 1000);
+
     const API_BASE = 'https://one000homevibes.onrender.com';
     const ADMIN_SECRET = ''; // leave empty to prompt
     let products = [];
@@ -205,7 +255,6 @@
       p.image3 = document.getElementById('editImage3').value;
       p.video = document.getElementById('editVideo').value;
 
-      // ✅ Clean category
       let rawCategory = document.getElementById('editCategory').value || 'Other';
       p.category = rawCategory.trim().charAt(0).toUpperCase() + rawCategory.trim().slice(1).toLowerCase();
 
