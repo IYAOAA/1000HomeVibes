@@ -33,9 +33,20 @@ function displayProducts(products) {
     card.dataset.category = (product.category || "").toLowerCase();
     card.dataset.title = (product.title || "").toLowerCase();
 
-    // Convert USD → NGN (rate ~ 1500, adjust if needed)
+    // ✅ Currency aware price
+    const currency = product.currency || "USD";
     const usdPrice = parseFloat(product.price) || 0;
-    const ngnPrice = usdPrice * 1500;
+    const ngnPrice = currency === "USD" ? usdPrice * 1500 : parseFloat(product.price) || 0;
+
+    // ✅ Determine affiliate site name
+    let affiliateSite = "Amazon";
+    if (product.affiliateSite) {
+      affiliateSite = product.affiliateSite;
+    } else if (product.mode === "ebay") {
+      affiliateSite = "eBay";
+    } else if (product.mode === "jumia") {
+      affiliateSite = "Jumia";
+    }
 
     // images carousel array
     const images = [product.image, product.image2, product.image3].filter(Boolean);
@@ -43,13 +54,19 @@ function displayProducts(products) {
 
     const imgId = `img-${product.id}-${Math.random().toString(36).slice(2)}`;
 
-    // initial compact view
+    // ✅ Product card with affiliate + price
     card.innerHTML = `
       <img id="${imgId}" src="${images[0]}" alt="${product.title}" class="mb-4 rounded w-full h-48 object-cover" />
       <h3 class="font-normal text-xs mb-1">${product.title}</h3>
       <div class="mb-3">
-        <p class="text-green-700 font-bold text-sm">$${usdPrice.toFixed(2)}</p>
-        <p class="text-gray-600 text-xs">₦${ngnPrice.toLocaleString()}</p>
+        <p class="text-green-700 font-bold text-sm">
+          ${currency === "USD" ? `$${usdPrice.toFixed(2)}` : `${usdPrice} ${currency}`}
+        </p>
+        ${
+          currency === "USD"
+            ? `<p class="text-gray-600 text-xs">₦${ngnPrice.toLocaleString()}</p>`
+            : ""
+        }
       </div>
       <button onclick="toggleSpecs(this)" class="bg-yellow-500 text-black px-3 py-1 mt-2 inline-block rounded hover:bg-yellow-400 text-xs font-semibold">
         Read Specs
@@ -57,14 +74,16 @@ function displayProducts(products) {
       <div class="specs hidden mt-3 text-xs text-gray-700">
         <p class="mb-2">${product.description || ''}</p>
         <a href="${product.buy_link}" onclick="trackClick('${product.title}')" target="_blank" 
-           class="bg-yellow-500 text-black px-3 py-1 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 text-xs font-semibold">Buy on ${product.mode === 'ebay' ? 'eBay' : (product.mode === 'jumia' ? 'Jumia' : 'Amazon')}</a>
+           class="bg-yellow-500 text-black px-3 py-1 mt-2 mr-2 inline-block rounded hover:bg-yellow-400 text-xs font-semibold">
+           Buy on ${affiliateSite}
+        </a>
         <a href="product-wisdom.html?id=${product.id}" class="text-green-800 underline mt-2 block">Why This Product?</a>
       </div>
     `;
 
     grid.appendChild(card);
 
-    // auto-rotate images if more than one
+    // ✅ auto-rotate images if more than one
     if (images.length > 1) {
       setInterval(() => {
         currentImg = (currentImg + 1) % images.length;
