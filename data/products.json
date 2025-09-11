@@ -82,21 +82,5 @@
     "description": "About this item\n150 Capsules - 150 Days supply\nOptimal Wellness: our Berberine supplement naturally support circulation, liver and gut function, enhancing digestion and aiding weight management",
     "buy_link": "https://www.amazon.com/dp/B0C5HZN8ZT/?tag=1000homeremed-20",
     "mode": "affiliate"
-  },
-  {
-    "id": "demo-air-1",
-    "title": "Smart Home Air Purifier",
-    "category": "Air",
-    "image": "https://placehold.co/300x200?text=Air+Purifier",
-    "description": "High-efficiency HEPA filter removes 99% of airborne particles.",
-    "buy_link": "https://example.com/demo-air"
-  },
-  {
-    "id": "demo-sleep-1",
-    "title": "Cooling Gel Memory Foam Pillow",
-    "category": "Sleep",
-    "image": "https://placehold.co/300x200?text=Gel+Pillow",
-    "description": "Keeps you cool and comfortable throughout the night.",
-    "buy_link": "https://example.com/demo-sleep"
   }
 ]
