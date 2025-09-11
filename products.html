@@ -19,17 +19,32 @@
   <style>
     /* limit description height (foldable) */
     .specs p {
-      max-height: 4.5em; /* about 3 lines */
+      max-height: 4.5em;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .specs.expanded p {
-      max-height: none;
-    }
+    .specs.expanded p { max-height: none; }
 
     /* product card font adjustments */
-    .product-card h3 { font-size: 0.95rem; }
+    .product-card h3 { 
+      font-size: 0.75rem; 
+      font-weight: normal; 
+    }
     .product-card p { font-size: 0.8rem; }
+
+    /* loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #facc15;
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="bg-green-950 text-white font-sans">
@@ -79,9 +94,15 @@
 
     <!-- Main product section -->
     <main class="flex-1">
+      <!-- Loading Spinner -->
+      <div id="loading" class="text-center py-6">
+        <div class="spinner mx-auto"></div>
+        <p class="text-yellow-300 text-sm mt-2">Loading products…</p>
+      </div>
+
       <!-- Product grid -->
       <section id="product-grid" 
-        class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-5 py-6">
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 py-6">
       </section>
 
       <p id="empty-state" class="text-center text-yellow-300 hidden">😔 No products found.</p>
@@ -95,5 +116,17 @@
   </footer>
 
   <script src="products.js"></script>
+  <script>
+    // Hide spinner once products.js finishes
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new MutationObserver(() => {
+        if (document.querySelector('#product-grid').children.length > 0) {
+          document.getElementById('loading').style.display = 'none';
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.querySelector('#product-grid'), { childList: true });
+    });
+  </script>
 </body>
 </html>
