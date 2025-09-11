@@ -38,13 +38,14 @@ function displayProducts(products) {
     const usdPrice = parseFloat(product.price) || 0;
     const ngnPrice = currency === "USD" ? usdPrice * 1500 : parseFloat(product.price) || 0;
 
-    // ✅ Determine affiliate site name
-    let affiliateSite = "Amazon";
+    // ✅ Determine affiliate site name (normalize to lowercase)
+    const mode = (product.mode || '').toLowerCase();
+    let affiliateSite = "Amazon"; // default
     if (product.affiliateSite) {
       affiliateSite = product.affiliateSite;
-    } else if (product.mode === "ebay") {
+    } else if (mode === "ebay") {
       affiliateSite = "eBay";
-    } else if (product.mode === "jumia") {
+    } else if (mode === "jumia") {
       affiliateSite = "Jumia";
     }
 
