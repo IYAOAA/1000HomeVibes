@@ -10,10 +10,15 @@ document.getElementById("product-grid").innerHTML = `
 fetch("https://one000homevibes.onrender.com/products")
   .then(res => res.json())
   .then(products => {
-    // sort newest first by updatedAt or createdAt if present
-    allProducts = (products || []).sort((a,b)=>{
-      return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
-    });
+    // ✅ Sort newest first by updatedAt or createdAt if present
+    if (products && products.length && products.some(p => p.updatedAt || p.createdAt)) {
+      allProducts = (products || []).sort((a,b)=>{
+        return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+      });
+    } else {
+      // ✅ If no timestamps exist, reverse array so last added shows first
+      allProducts = (products || []).reverse();
+    }
     displayProducts(allProducts);
   })
   .catch(err => {
