@@ -109,11 +109,6 @@
       <button onclick="addProduct()">+ Add Product</button>
       <button onclick="saveToGit()">💾 Save to GitHub</button>
       <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
-      <!-- NEW Wisdom Buttons -->
-      <hr>
-      <button onclick="loadWisdom()">📚 Load Wisdom</button>
-      <button onclick="addWisdomProduct()">+ Add Wisdom Product</button>
-      <button onclick="saveWisdom()">💾 Save Wisdom</button>
     </div>
 
     <div id="products"></div>
@@ -130,6 +125,7 @@
       <h3>Clock</h3>
       <div id="clock" style="font-size:1.2em;font-weight:bold;"></div>
     </div>
+    <!-- Calculator removed as requested -->
   </div>
 
   <!-- Edit Modal -->
@@ -199,19 +195,6 @@
       <label>Buy Link</label>
       <input id="editLink">
 
-      <!-- Wisdom specific fields -->
-      <label>Wellness Hook (Wisdom only)</label>
-      <textarea id="editWellness" rows="2"></textarea>
-
-      <label>How to Use (Wisdom only)</label>
-      <textarea id="editHowToUse" rows="2"></textarea>
-
-      <label>Bonus Tip (Wisdom only)</label>
-      <textarea id="editBonusTip" rows="2"></textarea>
-
-      <label>Good For (Wisdom only)</label>
-      <textarea id="editGoodFor" rows="2"></textarea>
-
       <button onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
@@ -226,14 +209,12 @@
     const API_BASE = 'https://one000homevibes.onrender.com';
     const ADMIN_SECRET = '';
     let products = [];
-    let wisdomProducts = [];
     let editingIndex = null;
-    let editingWisdom = false;
 
-    function renderProducts(list = products, isWisdom = false) {
+    function renderProducts() {
       const container = document.getElementById('products');
       container.innerHTML = '';
-      list.forEach((p, i) => {
+      products.forEach((p, i) => {
         const div = document.createElement('div');
         div.className = 'product-card';
         div.innerHTML = `
@@ -241,21 +222,20 @@
           <div class="product-info">
             <strong>${p.title || '(No title)'}</strong><br>
             <small>${p.category || ''}</small><br>
-            <small>${p.price ? (p.currency || '') + ' ' + p.price : ''}</small>
+            <small>${p.price ? p.currency + ' ' + p.price : ''}</small>
           </div>
           <div>
-            <button onclick="openModal(${i},${isWisdom})">✏️ Edit</button>
-            <button onclick="removeProduct(${i},${isWisdom})">❌ Delete</button>
+            <button onclick="openModal(${i})">✏️ Edit</button>
+            <button onclick="removeProduct(${i})">❌ Delete</button>
           </div>
         `;
         container.appendChild(div);
       });
     }
 
-    function openModal(i,isWisdom=false) {
+    function openModal(i) {
       editingIndex = i;
-      editingWisdom = isWisdom;
-      const p = isWisdom ? wisdomProducts[i] : products[i];
+      const p = products[i];
       document.getElementById('editTitle').value = p.title || '';
       document.getElementById('editId').value = p.id || '';
       document.getElementById('editImage').value = p.image || '';
@@ -269,24 +249,17 @@
       document.getElementById('editDescription').value = p.description || '';
       document.getElementById('editMode').value = p.mode || 'affiliate';
       document.getElementById('editLink').value = p.buy_link || '';
-      // Wisdom fields
-      document.getElementById('editWellness').value = p.wellness_hook || '';
-      document.getElementById('editHowToUse').value = p.how_to_use || '';
-      document.getElementById('editBonusTip').value = p.bonus_tip || '';
-      document.getElementById('editGoodFor').value = p.good_for || '';
       document.getElementById('editModal').style.display = 'flex';
     }
 
     function closeModal() {
       document.getElementById('editModal').style.display = 'none';
       editingIndex = null;
-      editingWisdom = false;
     }
 
     function saveEdit() {
       if (editingIndex === null) return;
-      const list = editingWisdom ? wisdomProducts : products;
-      const p = list[editingIndex];
+      const p = products[editingIndex];
       p.title = document.getElementById('editTitle').value;
       p.id = document.getElementById('editId').value;
       p.image = document.getElementById('editImage').value;
@@ -300,12 +273,7 @@
       p.description = document.getElementById('editDescription').value;
       p.mode = document.getElementById('editMode').value;
       p.buy_link = document.getElementById('editLink').value;
-      // Wisdom fields
-      p.wellness_hook = document.getElementById('editWellness').value;
-      p.how_to_use = document.getElementById('editHowToUse').value;
-      p.bonus_tip = document.getElementById('editBonusTip').value;
-      p.good_for = document.getElementById('editGoodFor').value;
-      renderProducts(list,editingWisdom);
+      renderProducts();
       closeModal();
     }
 
@@ -315,28 +283,10 @@
         price:'', currency:'NGN', category:'Other', website:'Amazon',
         description:'', buy_link:'', mode:'affiliate' 
       });
-      renderProducts(products,false);
+      renderProducts();
     }
 
-    function addWisdomProduct() {
-      wisdomProducts.push({ 
-        title:'', id:'', image:'', image2:'', image3:'', video:'',
-        price:'', currency:'NGN', category:'Other', website:'Amazon',
-        description:'', buy_link:'', mode:'affiliate',
-        wellness_hook:'', how_to_use:'', bonus_tip:'', good_for:''
-      });
-      renderProducts(wisdomProducts,true);
-    }
-
-    function removeProduct(i,isWisdom=false){
-      if(isWisdom){
-        wisdomProducts.splice(i,1);
-        renderProducts(wisdomProducts,true);
-      } else {
-        products.splice(i,1);
-        renderProducts(products,false);
-      }
-    }
+    function removeProduct(i) { products.splice(i,1); renderProducts(); }
 
     async function loadFromGit() {
       document.getElementById('status').textContent = 'Loading...';
@@ -344,7 +294,7 @@
         const res = await fetch(API_BASE + '/products');
         const data = await res.json();
         products = data || [];
-        renderProducts(products,false);
+        renderProducts();
         document.getElementById('status').textContent = 'Loaded ✅';
       } catch (e) {
         document.getElementById('status').textContent = 'Error loading ❌';
@@ -370,38 +320,6 @@
       }
     }
 
-    async function loadWisdom() {
-      document.getElementById('status').textContent = 'Loading Wisdom...';
-      try {
-        const res = await fetch(API_BASE + '/product-wisdom');
-        const data = await res.json();
-        wisdomProducts = data || [];
-        renderProducts(wisdomProducts,true);
-        document.getElementById('status').textContent = 'Wisdom Loaded ✅';
-      } catch (e) {
-        document.getElementById('status').textContent = 'Error loading Wisdom ❌';
-        console.error(e);
-      }
-    }
-
-    async function saveWisdom() {
-      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
-      document.getElementById('status').textContent = 'Saving Wisdom...';
-      try {
-        const res = await fetch(API_BASE + '/update-product-wisdom', {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json','x-admin-secret':secret },
-          body: JSON.stringify(wisdomProducts)
-        });
-        if(!res.ok) throw new Error('Save failed');
-        await loadWisdom();
-        document.getElementById('status').textContent = 'Wisdom Saved ✅ and reloaded';
-      } catch(e) {
-        document.getElementById('status').textContent = 'Error saving Wisdom ❌';
-        console.error(e);
-      }
-    }
-
     async function autoGenerateProducts() {
       const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
       document.getElementById('status').textContent = 'Generating AI products...';
@@ -413,7 +331,7 @@
         if(!res.ok) throw new Error('AI update failed');
         const data = await res.json();
         products = data.products || [];
-        renderProducts(products,false);
+        renderProducts();
         document.getElementById('status').textContent = 'AI products added ✅';
       } catch(e) {
         document.getElementById('status').textContent = 'Error AI update ❌';
