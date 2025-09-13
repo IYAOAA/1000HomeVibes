@@ -1,51 +1,133 @@
+<!-- product-wisdom.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Product Wisdom | 1000 Home Vibes</title>
-  <link rel="icon" href="assets/favicon.ico">
-  <script src="https://cdn.tailwindcss.com"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Wisdom</title>
+  <link rel="stylesheet" href="styles.css"> <!-- optional existing CSS -->
+  <style>
+    body {
+      background-color: #fdf5e6; /* light gold background */
+      color: #000;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: gold;
+      color: black;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1,h2,h3 {
+      color: black;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    video {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #333;
+      background: gold;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+    .back-link:hover {
+      background: #e0b000;
+    }
+  </style>
 </head>
-<body class="bg-green-950 text-white font-sans">
-
-  <header class="text-center py-10">
-    <h1 id="wisdom-title" class="text-3xl font-bold text-yellow-100">Loading...</h1>
-    <a href="products.html" class="inline-block mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">← Back to Products</a>
+<body>
+  <header>
+    <h1>Product Wisdom</h1>
   </header>
 
-  <section class="max-w-3xl mx-auto px-6 pb-20 space-y-8">
-    <div class="bg-white text-black p-6 rounded-xl shadow-lg">
-      <h2 class="text-xl font-semibold mb-2 text-green-900">🌿 Why This Product?</h2>
-      <p id="wellness-hook"></p>
-    </div>
+  <div class="container">
+    <a href="products.html" class="back-link">← Back to Products</a>
+    <div id="wisdom-content">Loading wisdom...</div>
+  </div>
 
-    <div class="bg-white text-black p-6 rounded-xl shadow-lg">
-      <h2 class="text-xl font-semibold mb-2 text-green-900">🛠️ How to Use</h2>
-      <p id="how-to-use"></p>
-    </div>
+  <script>
+    // Get product ID from URL ?id=xxxx
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
 
-    <div class="bg-white text-black p-6 rounded-xl shadow-lg">
-      <h2 class="text-xl font-semibold mb-2 text-green-900">💡 Bonus Tip</h2>
-      <p id="bonus-tip"></p>
-    </div>
+    async function loadWisdom() {
+      try {
+        const res = await fetch('/product-wisdom');
+        const wisdomData = await res.json();
 
-    <div class="bg-white text-black p-6 rounded-xl shadow-lg">
-      <h2 class="text-xl font-semibold mb-2 text-green-900">🤝 Who Is This For?</h2>
-      <p id="good-for"></p>
-    </div>
+        // find wisdom for this product id
+        const item = wisdomData.find(w => w.id === productId || w.product_id === productId);
 
-    <div class="text-center">
-      <a id="buy-link" href="#" target="_blank" class="bg-yellow-500 text-black px-6 py-3 rounded-full font-bold text-lg hover:bg-yellow-400">Buy on Amazon</a>
-    </div>
-  </section>
+        if (!item) {
+          document.getElementById('wisdom-content').innerHTML =
+            '<p>No wisdom found for this product.</p>';
+          return;
+        }
 
-  <footer class="text-center text-yellow-200 text-sm py-8">
-    &copy; 2025 1000 Home Vibes |
-    <a href="contact.html" class="underline hover:text-yellow-400">Contact</a> |
-    <a href="about.html" class="underline hover:text-yellow-400">About</a>
-  </footer>
+        // Build the HTML
+        const html = `
+          <h2>${item.title || 'Product Details'}</h2>
 
-  <script src="product-wisdom.js"></script>
+          <div class="section">
+            <h3>Description</h3>
+            <p>${item.description || 'No description provided.'}</p>
+          </div>
+
+          <div class="section">
+            <h3>Bonus Tips</h3>
+            <p>${item.bonusTip || 'No bonus tip available.'}</p>
+          </div>
+
+          <div class="section">
+            <h3>Who is this for?</h3>
+            <p>${item.whoFor || 'Information not provided.'}</p>
+          </div>
+
+          <div class="section">
+            <h3>Images</h3>
+            ${item.image ? `<img src="${item.image}" alt="Image">` : ''}
+            ${item.image2 ? `<img src="${item.image2}" alt="Image 2">` : ''}
+            ${item.image3 ? `<img src="${item.image3}" alt="Image 3">` : ''}
+          </div>
+
+          <div class="section">
+            <h3>Video</h3>
+            ${item.video ? `<video controls src="${item.video}"></video>` : '<p>No video available.</p>'}
+          </div>
+        `;
+        document.getElementById('wisdom-content').innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('wisdom-content').innerHTML =
+          '<p>Failed to load wisdom.</p>';
+      }
+    }
+
+    loadWisdom();
+  </script>
 </body>
 </html>
