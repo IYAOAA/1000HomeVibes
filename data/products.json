@@ -10,7 +10,9 @@
     "price": 33.99,
     "image2": "https://m.media-amazon.com/images/I/81Cn8ifgJ7L._SX522_.jpg",
     "image3": "https://m.media-amazon.com/images/I/81zEkp+rd4L._SX522_.jpg",
-    "video": "https://www.amazon.com/vdp/0f6d6acfc1ff4158b0c79ac0061fffe0?product=B0C5DCTH9M&ref=cm_sw_cp_r_ib_dt_2AOmKmxPcF4jL"
+    "video": "https://www.amazon.com/vdp/0f6d6acfc1ff4158b0c79ac0061fffe0?product=B0C5DCTH9M&ref=cm_sw_cp_r_ib_dt_2AOmKmxPcF4jL",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "BulkSupplements Creatine Monohydrate Powder ",
@@ -25,7 +27,9 @@
     "video": "",
     "price": "19.97",
     "currency": "USD",
-    "website": "Amazon"
+    "website": "Amazon",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Etekcity Smart",
@@ -40,7 +44,9 @@
     "video": "",
     "price": "21.58",
     "currency": "USD",
-    "website": "Amazon"
+    "website": "Amazon",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "For Those I Knew and Loved",
@@ -54,7 +60,9 @@
     "price_unit": "USD",
     "image2": "",
     "image3": "",
-    "video": ""
+    "video": "",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "ASUS TUF Gaming GeForce RTX",
@@ -69,7 +77,9 @@
     "video": "",
     "price": "549",
     "currency": "USD",
-    "website": "Amazon"
+    "website": "Amazon",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Dell OptiPlex 5050 Desktop Computers with 24\" Monitor PC",
@@ -84,7 +94,9 @@
     "video": "",
     "price": "299.99",
     "currency": "USD",
-    "website": "Amazon"
+    "website": "Amazon",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Y40 PRO Black Gaming PC Desktop Computer",
@@ -93,7 +105,12 @@
     "category": "Electronics",
     "description": "",
     "buy_link": "https://www.amazon.com/iBUYPOWER-Desktop-Computer-GeForce-Keyboard/dp/B0DWHN5R8W/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "image2": "",
+    "image3": "",
+    "video": "",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Berberine with Cinnamon, Milk Thistle",
@@ -105,7 +122,9 @@
     "category": "Health",
     "description": "About this item\n150 Capsules - 150 Days supply\nOptimal Wellness: our Berberine supplement naturally support circulation, liver and gut function, enhancing digestion and aiding weight management",
     "buy_link": "https://www.amazon.com/dp/B0C5HZN8ZT/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Berberine Supplement 1300mg",
@@ -120,7 +139,9 @@
     "website": "Amazon",
     "description": "",
     "buy_link": "https://www.amazon.com/dp/B0CYR7H7LC/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Carlyle Berberine with Ceylon Cinnamon",
@@ -135,7 +156,9 @@
     "website": "Amazon",
     "description": "",
     "buy_link": "https://www.amazon.com/dp/B0CJFXP7YX/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Berberine Supplement 1000mg Potent Botanical Capsules",
@@ -150,7 +173,9 @@
     "website": "Amazon",
     "description": "About this item:\nWellness From Within: Take control of your metabolic and GI health with Thinbi's Berberine Supplement.",
     "buy_link": "https://www.amazon.com/Berberine-Supplement-Botanical-Capsules-Management/dp/B0CB77WD2X/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   },
   {
     "title": "Ancient Bliss Berberine HCL 1200mg",
@@ -165,6 +190,76 @@
     "website": "Amazon",
     "description": "About this item\nPowerful Ingredients Blend: 1200mg Berberine, 100mg Organic Ceylon Cinnamon, 100mg Bitter Melon, and 50mg Green Tea Extract per serving",
     "buy_link": "https://www.amazon.com/dp/B09Q6M6W9F/?tag=1000homeremed-20",
-    "mode": "affiliate"
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
+  },
+  {
+    "title": "Veken Rustproof & Waterproof Shower Caddy 6-Pack",
+    "id": "B0CJ56M8D4",
+    "image": "https://m.media-amazon.com/images/I/81OsSg5jKpL._AC_SX425_PIbundle-6,TopRight,0,0_SH20_.jpg",
+    "image2": "https://m.media-amazon.com/images/I/81lL0WwmMqL._AC_SX425_.jpg",
+    "image3": "https://m.media-amazon.com/images/I/81sZ7vnaNeL._AC_SX425_.jpg",
+    "video": "",
+    "price": "17.99",
+    "currency": "USD",
+    "category": "Kitchen",
+    "website": "Amazon",
+    "description": "About this item:\n\n-Stainless Steel\n\n-Comprehensive Storage Solution: This 6-piece set includes small, medium, and large caddies with a soap dish and toothbrush holder to organize shower essentials. Keep your shampoos, soaps, razors, and more neatly stored in one place for easy access.",
+    "buy_link": "https://www.amazon.com/Veken-Adhesive-Organizer-Rustproof-Stainless/dp/B0CJ56M8D4/?tag=1000homeremed-20",
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
+  },
+  {
+    "title": "Maupvit Shoe Storage Cabinet with 2 Flip Drawers",
+    "id": "B0BC1DD4WH",
+    "image": "https://m.media-amazon.com/images/I/711GMPFIvpL._AC_SY450_.jpg",
+    "image2": "https://m.media-amazon.com/images/I/81JsjAoQnSL._AC_SY450_.jpg",
+    "image3": "https://m.media-amazon.com/images/I/715WBAMN8wL._AC_SY450_.jpg",
+    "video": "",
+    "price": "125.99",
+    "currency": "USD",
+    "category": "Home",
+    "website": "Amazon",
+    "description": "About this item:\n\nEntryway Shoe Cabinet: The hidden shoe storage cabinet with 2 flip doors, stylish and simple rustic brown makes it a neat and beautiful finish and looks great in many different home styles. Perfect for placing in the entryway,",
+    "buy_link": "https://www.amazon.com/Maupvit-Cabinet-Freestanding-Organizer-Entryway/dp/B0BC1DD4WH/?tag=1000homeremed-20",
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
+  },
+  {
+    "title": "KSIPZE 100ft Led Strip Lights RGB Music Sync Color Changing Bluetooth Led Lights with Smart App Control",
+    "id": "B09V366BDY",
+    "image": "https://m.media-amazon.com/images/I/71tbt5k9nsL._AC_SX522_.jpg",
+    "image2": "https://m.media-amazon.com/images/I/71lntIT6FfL._AC_SX522_PIbundle-5,TopRight,0,0_SH20_.jpg",
+    "image3": "https://m.media-amazon.com/images/I/81X2fz+ilML._AC_SX522_.jpg",
+    "video": "",
+    "price": "9.99",
+    "currency": "USD",
+    "category": "Home",
+    "website": "Amazon",
+    "description": "About this item:\n\nAPP and IR Remote Contorl: With a stable bluetooth connection,control your LED lights,freely change in 16 million colors,adjust brightness,customize modes",
+    "buy_link": "https://www.amazon.com/Changing-Control-Lighting-Flexible-Decoration/dp/B09V366BDY/?tag=1000homeremed-20",
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
+  },
+  {
+    "title": "Bookshelf Decor Thinker Statue - Abstract Art Reading Thinker Sculpture Figurine Aesthetic",
+    "id": "B0D26F6FNN",
+    "image": "https://m.media-amazon.com/images/I/61OVQe73t1L._AC_SY300_SX300_QL70_FMwebp_.jpg",
+    "image2": "https://m.media-amazon.com/images/I/715ONCgCE3L._AC_SX425_.jpg",
+    "image3": "https://m.media-amazon.com/images/I/71xhkB+fKbL._AC_SX425_.jpg",
+    "video": "",
+    "price": "14.96",
+    "currency": "USD",
+    "category": "Books",
+    "website": "Amazon",
+    "description": "About this item:\n\nAesthetic Decor: The reading thinker statue is a great addition to any bookshelf. It depicts a thinker reading a book, elegant and unique in design, adding aesthetic and artistic style to your home decor",
+    "buy_link": "https://www.amazon.com/UTTCMK-Bookshelf-Decor-Thinker-Statue/dp/B0D26F6FNN/?tag=1000homeremed-20",
+    "mode": "affiliate",
+    "provider": "Amazon",
+    "dateAdded": 1757758044845
   }
 ]
