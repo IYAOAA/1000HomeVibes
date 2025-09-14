@@ -105,10 +105,11 @@
     </div>
 
     <div id="controls">
-      <button onclick="loadFromGit()">Reload from GitHub</button>
+      <button onclick="loadFromGit()">Reload Products</button>
       <button onclick="addProduct()">+ Add Product</button>
-      <button onclick="saveToGit()">💾 Save to GitHub</button>
-      <button onclick="autoGenerateProducts()">🤖 Auto AI</button>
+      <button onclick="saveToGit()">💾 Save Products</button>
+      <button onclick="loadWisdomFromGit()">Load Wisdom</button>
+      <button onclick="saveWisdomToGit()">💾 Save Wisdom</button>
     </div>
 
     <div id="products"></div>
@@ -125,7 +126,6 @@
       <h3>Clock</h3>
       <div id="clock" style="font-size:1.2em;font-weight:bold;"></div>
     </div>
-    <!-- Calculator removed as requested -->
   </div>
 
   <!-- Edit Modal -->
@@ -143,13 +143,13 @@
       <label>Main Image URL</label>
       <input id="editImage">
 
-      <label>Extra Image 2 (optional)</label>
+      <label>Extra Image 2</label>
       <input id="editImage2">
 
-      <label>Extra Image 3 (optional)</label>
+      <label>Extra Image 3</label>
       <input id="editImage3">
 
-      <label>Video URL (optional)</label>
+      <label>Video URL</label>
       <input id="editVideo">
 
       <label>Price</label>
@@ -195,6 +195,20 @@
       <label>Buy Link</label>
       <input id="editLink">
 
+      <hr>
+      <h3>📝 Product Wisdom</h3>
+      <label>Bonus Tip</label>
+      <textarea id="editBonusTip" rows="2"></textarea>
+
+      <label>Who is this for?</label>
+      <textarea id="editWhoFor" rows="2"></textarea>
+
+      <label>More Details</label>
+      <textarea id="editDetails" rows="3"></textarea>
+
+      <label>Wisdom Video URL</label>
+      <input id="editWisdomVideo">
+
       <button onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
@@ -209,6 +223,7 @@
     const API_BASE = 'https://one000homevibes.onrender.com';
     const ADMIN_SECRET = '';
     let products = [];
+    let productWisdom = []; // new
     let editingIndex = null;
 
     function renderProducts() {
@@ -249,6 +264,14 @@
       document.getElementById('editDescription').value = p.description || '';
       document.getElementById('editMode').value = p.mode || 'affiliate';
       document.getElementById('editLink').value = p.buy_link || '';
+
+      // Wisdom fields
+      const w = productWisdom.find(w => w.id === p.id) || {};
+      document.getElementById('editBonusTip').value = w.bonus_tip || '';
+      document.getElementById('editWhoFor').value = w.who_for || '';
+      document.getElementById('editDetails').value = w.details || '';
+      document.getElementById('editWisdomVideo').value = w.video || '';
+
       document.getElementById('editModal').style.display = 'flex';
     }
 
@@ -273,6 +296,18 @@
       p.description = document.getElementById('editDescription').value;
       p.mode = document.getElementById('editMode').value;
       p.buy_link = document.getElementById('editLink').value;
+
+      // Save wisdom
+      let w = productWisdom.find(w => w.id === p.id);
+      if (!w) {
+        w = { id: p.id };
+        productWisdom.push(w);
+      }
+      w.bonus_tip = document.getElementById('editBonusTip').value;
+      w.who_for = document.getElementById('editWhoFor').value;
+      w.details = document.getElementById('editDetails').value;
+      w.video = document.getElementById('editWisdomVideo').value;
+
       renderProducts();
       closeModal();
     }
@@ -289,22 +324,22 @@
     function removeProduct(i) { products.splice(i,1); renderProducts(); }
 
     async function loadFromGit() {
-      document.getElementById('status').textContent = 'Loading...';
+      document.getElementById('status').textContent = 'Loading products...';
       try {
         const res = await fetch(API_BASE + '/products');
         const data = await res.json();
         products = data || [];
         renderProducts();
-        document.getElementById('status').textContent = 'Loaded ✅';
+        document.getElementById('status').textContent = 'Products loaded ✅';
       } catch (e) {
-        document.getElementById('status').textContent = 'Error loading ❌';
+        document.getElementById('status').textContent = 'Error loading products ❌';
         console.error(e);
       }
     }
 
     async function saveToGit() {
       const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
-      document.getElementById('status').textContent = 'Saving...';
+      document.getElementById('status').textContent = 'Saving products...';
       try {
         const res = await fetch(API_BASE + '/update-products', {
           method:'POST',
@@ -313,33 +348,48 @@
         });
         if(!res.ok) throw new Error('Save failed');
         await loadFromGit();
-        document.getElementById('status').textContent = 'Saved ✅ and reloaded';
+        document.getElementById('status').textContent = 'Products saved ✅';
       } catch(e) {
-        document.getElementById('status').textContent = 'Error saving ❌';
+        document.getElementById('status').textContent = 'Error saving products ❌';
         console.error(e);
       }
     }
 
-    async function autoGenerateProducts() {
-      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
-      document.getElementById('status').textContent = 'Generating AI products...';
+    // Wisdom functions
+    async function loadWisdomFromGit() {
+      document.getElementById('status').textContent = 'Loading wisdom...';
       try {
-        const res = await fetch(API_BASE + '/auto-update', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json','x-admin-secret': secret }
-        });
-        if(!res.ok) throw new Error('AI update failed');
+        const res = await fetch(API_BASE + '/product-wisdom');
         const data = await res.json();
-        products = data.products || [];
-        renderProducts();
-        document.getElementById('status').textContent = 'AI products added ✅';
+        productWisdom = data || [];
+        document.getElementById('status').textContent = 'Wisdom loaded ✅';
       } catch(e) {
-        document.getElementById('status').textContent = 'Error AI update ❌';
+        document.getElementById('status').textContent = 'Error loading wisdom ❌';
         console.error(e);
       }
     }
 
-    window.addEventListener('DOMContentLoaded', loadFromGit);
+    async function saveWisdomToGit() {
+      const secret = ADMIN_SECRET || prompt('Enter Admin Secret:');
+      document.getElementById('status').textContent = 'Saving wisdom...';
+      try {
+        const res = await fetch(API_BASE + '/update-product-wisdom', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json','x-admin-secret':secret },
+          body: JSON.stringify(productWisdom)
+        });
+        if(!res.ok) throw new Error('Save failed');
+        document.getElementById('status').textContent = 'Wisdom saved ✅';
+      } catch(e) {
+        document.getElementById('status').textContent = 'Error saving wisdom ❌';
+        console.error(e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromGit();
+      loadWisdomFromGit();
+    });
   </script>
 </body>
 </html>
