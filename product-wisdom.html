@@ -2,132 +2,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Wisdom</title>
-  <link rel="stylesheet" href="styles.css"> <!-- optional existing CSS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Wisdom | 1000 Home Vibes</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-color: #fdf5e6; /* light gold background */
-      color: #000;
+      background-color: #013220;
+      color: #f5f5f5;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
-    header {
-      background: gold;
-      color: black;
-      text-align: center;
-      padding: 20px;
-    }
     .container {
       max-width: 800px;
-      margin: 30px auto;
+      margin: 0 auto;
       padding: 20px;
-      background: #fff;
+    }
+    header {
+      text-align: center;
+      padding: 30px 0;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: gold;
+      margin-bottom: 10px;
+    }
+    .back-link {
+      color: gold;
+      text-decoration: none;
+      background: #f5f5f5;
+      color: #013220;
+      padding: 10px 15px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .section {
+      background: #f5f5f5;
+      color: #013220;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
-    h1,h2,h3 {
-      color: black;
+    .section h2 {
+      margin-top: 0;
+      color: #013220;
     }
-    img {
-      max-width: 100%;
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .images-grid img {
+      width: 100%;
+      height: auto;
       border-radius: 8px;
-      margin: 10px 0;
+      object-fit: cover;
     }
     video {
       width: 100%;
       max-height: 400px;
       border-radius: 8px;
-      margin: 10px 0;
+      margin-top: 10px;
     }
-    .section {
-      margin-bottom: 20px;
-    }
-    .back-link {
+    .spinner {
       display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      color: #333;
-      background: gold;
-      padding: 8px 12px;
-      border-radius: 5px;
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: gold;
+      border-radius: 50%;
+      animation: spin 1s ease-in-out infinite;
+      margin: 40px auto;
     }
-    .back-link:hover {
-      background: #e0b000;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .not-found {
+      text-align: center;
+      color: gold;
+      font-size: 1.2rem;
+      margin-top: 50px;
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>Product Wisdom</h1>
-  </header>
-
-  <div class="container">
+<body class="bg-green-950">
+  <header class="container">
+    <h1 id="wisdom-title">Loading...</h1>
     <a href="products.html" class="back-link">← Back to Products</a>
-    <div id="wisdom-content">Loading wisdom...</div>
+  </header>
+  
+  <div id="content" class="container">
+    <div id="spinner" class="text-center">
+      <div class="spinner"></div>
+      <p>Loading wisdom…</p>
+    </div>
+
+    <div id="wisdom-details" class="hidden">
+      <div class="section">
+        <h2>What’s This Product?</h2>
+        <p id="what-is"></p>
+      </div>
+
+      <div class="section">
+        <h2>How to Use</h2>
+        <p id="how-to-use"></p>
+      </div>
+
+      <div class="section">
+        <h2>Bonus Tip</h2>
+        <p id="bonus-tip"></p>
+      </div>
+
+      <div class="section">
+        <h2>Who Is This For?</h2>
+        <p id="good-for"></p>
+      </div>
+
+      <div class="section">
+        <h2>More Images</h2>
+        <div id="images" class="images-grid"></div>
+      </div>
+
+      <div class="section">
+        <h2>Video</h2>
+        <div id="video-container"></div>
+      </div>
+
+      <div class="section text-center">
+        <a id="buy-link" href="#" target="_blank"
+           class="inline-block bg-yellow-500 text-black px-6 py-3 rounded-full font-bold hover:bg-yellow-400">
+          Buy Now
+        </a>
+      </div>
+    </div>
+
+    <div id="not-found" class="not-found hidden">
+      Wisdom not found for this product.
+    </div>
   </div>
 
   <script>
-    // Get product ID from URL ?id=xxxx
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
 
-    async function loadWisdom() {
-      try {
-        const res = await fetch('/product-wisdom');
-        const wisdomData = await res.json();
+      const spinnerEl = document.getElementById("spinner");
+      const detailsEl = document.getElementById("wisdom-details");
+      const notFoundEl = document.getElementById("not-found");
 
-        // find wisdom for this product id
-        const item = wisdomData.find(w => w.id === productId || w.product_id === productId);
+      fetch("/product-wisdom")
+        .then(res => res.json())
+        .then(data => {
+          // hide spinner
+          spinnerEl.style.display = "none";
 
-        if (!item) {
-          document.getElementById('wisdom-content').innerHTML =
-            '<p>No wisdom found for this product.</p>';
-          return;
-        }
+          const item = data.find(w => w.id === id || w.product_id === id);
+          if (!item) {
+            notFoundEl.classList.remove("hidden");
+            return;
+          }
 
-        // Build the HTML
-        const html = `
-          <h2>${item.title || 'Product Details'}</h2>
+          // populate fields
+          document.getElementById("wisdom-title").textContent = item.title || "Details";
+          document.getElementById("what-is").textContent = item.description || "No description.";
+          document.getElementById("how-to-use").textContent = item.how_to_use || "No usage info.";
+          document.getElementById("bonus-tip").textContent = item.bonus_tip || "No bonus tip.";
+          document.getElementById("good-for").textContent = item.good_for || "Not specified.";
+          
+          // images
+          const imagesContainer = document.getElementById("images");
+          if (item.image) {
+            const img = document.createElement("img");
+            img.src = item.image;
+            imagesContainer.appendChild(img);
+          }
+          if (item.image2) {
+            const img2 = document.createElement("img");
+            img2.src = item.image2;
+            imagesContainer.appendChild(img2);
+          }
+          if (item.image3) {
+            const img3 = document.createElement("img");
+            img3.src = item.image3;
+            imagesContainer.appendChild(img3);
+          }
 
-          <div class="section">
-            <h3>Description</h3>
-            <p>${item.description || 'No description provided.'}</p>
-          </div>
+          // video
+          const videoC = document.getElementById("video-container");
+          if (item.video) {
+            const videoEl = document.createElement("video");
+            videoEl.controls = true;
+            videoEl.src = item.video;
+            videoC.appendChild(videoEl);
+          } else {
+            videoC.textContent = "No video available.";
+          }
 
-          <div class="section">
-            <h3>Bonus Tips</h3>
-            <p>${item.bonusTip || 'No bonus tip available.'}</p>
-          </div>
+          // buy link
+          const buyLinkEl = document.getElementById("buy-link");
+          if (item.buy_link) {
+            buyLinkEl.href = item.buy_link;
+          } else {
+            buyLinkEl.style.display = "none";
+          }
 
-          <div class="section">
-            <h3>Who is this for?</h3>
-            <p>${item.whoFor || 'Information not provided.'}</p>
-          </div>
-
-          <div class="section">
-            <h3>Images</h3>
-            ${item.image ? `<img src="${item.image}" alt="Image">` : ''}
-            ${item.image2 ? `<img src="${item.image2}" alt="Image 2">` : ''}
-            ${item.image3 ? `<img src="${item.image3}" alt="Image 3">` : ''}
-          </div>
-
-          <div class="section">
-            <h3>Video</h3>
-            ${item.video ? `<video controls src="${item.video}"></video>` : '<p>No video available.</p>'}
-          </div>
-        `;
-        document.getElementById('wisdom-content').innerHTML = html;
-      } catch (err) {
-        console.error(err);
-        document.getElementById('wisdom-content').innerHTML =
-          '<p>Failed to load wisdom.</p>';
-      }
-    }
-
-    loadWisdom();
+          // show details
+          detailsEl.classList.remove("hidden");
+        })
+        .catch(err => {
+          console.error("Error loading product wisdom:", err);
+          spinnerEl.style.display = "none";
+          notFoundEl.classList.remove("hidden");
+          notFoundEl.textContent = "Something went wrong loading wisdom.";
+        });
+    })();
   </script>
 </body>
 </html>
