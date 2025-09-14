@@ -1,224 +1,109 @@
-<!-- product-wisdom.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Wisdom | 1000 Home Vibes</title>
-  <link rel="icon" href="assets/favicon.ico" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Wisdom</title>
   <style>
     body {
-      background-color: #013220;
-      color: #f5f5f5;
       font-family: Arial, sans-serif;
+      background-color: #002d00; /* your dark green background */
+      color: #ffffff;
       margin: 0;
       padding: 0;
+      text-align: center;
     }
+
+    h1 {
+      color: #FFD700; /* yellow title */
+      margin-top: 20px;
+    }
+
+    .loading {
+      color: #FFD700;
+      font-size: 1.5em;
+      margin-top: 50px;
+    }
+
+    .error {
+      color: #FFD700;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      text-align: left;
     }
-    header {
-      text-align: center;
-      padding: 30px 0;
+
+    img {
+      max-width: 100%;
+      margin: 10px 0;
+      border-radius: 8px;
     }
-    header h1 {
-      font-size: 2rem;
-      color: gold;
-      margin-bottom: 10px;
-    }
-    .back-link {
-      color: gold;
-      text-decoration: none;
-      background: #f5f5f5;
-      color: #013220;
-      padding: 10px 15px;
+
+    a.button {
+      display: inline-block;
+      background-color: #FFD700;
+      color: #000;
+      padding: 10px 20px;
       border-radius: 5px;
-      display: inline-block;
-      margin-bottom: 20px;
+      text-decoration: none;
+      margin: 20px 0;
     }
-    .section {
-      background: #f5f5f5;
-      color: #013220;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .section h2 {
-      margin-top: 0;
-      color: #013220;
-    }
-    .images-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-    }
-    .images-grid img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-    video {
-      width: 100%;
-      max-height: 400px;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    .spinner {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-top-color: gold;
-      border-radius: 50%;
-      animation: spin 1s ease-in-out infinite;
-      margin: 40px auto;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .not-found {
-      text-align: center;
-      color: gold;
-      font-size: 1.2rem;
-      margin-top: 50px;
+
+    a.button:hover {
+      background-color: #e6c200;
     }
   </style>
 </head>
-<body class="bg-green-950">
-  <header class="container">
-    <h1 id="wisdom-title">Loading...</h1>
-    <a href="products.html" class="back-link">← Back to Products</a>
-  </header>
-  
-  <div id="content" class="container">
-    <div id="spinner" class="text-center">
-      <div class="spinner"></div>
-      <p>Loading wisdom…</p>
-    </div>
-
-    <div id="wisdom-details" class="hidden">
-      <div class="section">
-        <h2>What’s This Product?</h2>
-        <p id="what-is"></p>
-      </div>
-
-      <div class="section">
-        <h2>How to Use</h2>
-        <p id="how-to-use"></p>
-      </div>
-
-      <div class="section">
-        <h2>Bonus Tip</h2>
-        <p id="bonus-tip"></p>
-      </div>
-
-      <div class="section">
-        <h2>Who Is This For?</h2>
-        <p id="good-for"></p>
-      </div>
-
-      <div class="section">
-        <h2>More Images</h2>
-        <div id="images" class="images-grid"></div>
-      </div>
-
-      <div class="section">
-        <h2>Video</h2>
-        <div id="video-container"></div>
-      </div>
-
-      <div class="section text-center">
-        <a id="buy-link" href="#" target="_blank"
-           class="inline-block bg-yellow-500 text-black px-6 py-3 rounded-full font-bold hover:bg-yellow-400">
-          Buy Now
-        </a>
-      </div>
-    </div>
-
-    <div id="not-found" class="not-found hidden">
-      Wisdom not found for this product.
-    </div>
-  </div>
+<body>
+  <h1>Loading...</h1>
+  <a href="products.html" class="button">← Back to Products</a>
+  <div class="container" id="wisdom-content"></div>
+  <p id="error-message" class="error"></p>
 
   <script>
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
 
-      const spinnerEl = document.getElementById("spinner");
-      const detailsEl = document.getElementById("wisdom-details");
-      const notFoundEl = document.getElementById("not-found");
+    const content = document.getElementById("wisdom-content");
+    const errorMessage = document.getElementById("error-message");
+    const heading = document.querySelector("h1");
 
-      fetch("/product-wisdom.json")
-        .then(res => res.json())
-        .then(data => {
-          // hide spinner
-          spinnerEl.style.display = "none";
+    // ✅ This now loads the local JSON file instead of backend endpoint
+    fetch("product-wisdom.json")
+      .then(res => res.json())
+      .then(data => {
+        const product = data.find(item => item.id === productId);
 
-          const item = data.find(w => w.id === id || w.product_id === id);
-          if (!item) {
-            notFoundEl.classList.remove("hidden");
-            return;
-          }
+        if (!product) {
+          heading.textContent = "Product Wisdom Not Found";
+          errorMessage.textContent = "We couldn’t find wisdom for this product.";
+          return;
+        }
 
-          // populate fields
-          document.getElementById("wisdom-title").textContent = item.title || "Details";
-          document.getElementById("what-is").textContent = item.description || "No description.";
-          document.getElementById("how-to-use").textContent = item.how_to_use || "No usage info.";
-          document.getElementById("bonus-tip").textContent = item.bonus_tip || "No bonus tip.";
-          document.getElementById("good-for").textContent = item.good_for || "Not specified.";
-          
-          // images
-          const imagesContainer = document.getElementById("images");
-          if (item.image) {
-            const img = document.createElement("img");
-            img.src = item.image;
-            imagesContainer.appendChild(img);
-          }
-          if (item.image2) {
-            const img2 = document.createElement("img");
-            img2.src = item.image2;
-            imagesContainer.appendChild(img2);
-          }
-          if (item.image3) {
-            const img3 = document.createElement("img");
-            img3.src = item.image3;
-            imagesContainer.appendChild(img3);
-          }
+        heading.textContent = product.title;
 
-          // video
-          const videoC = document.getElementById("video-container");
-          if (item.video) {
-            const videoEl = document.createElement("video");
-            videoEl.controls = true;
-            videoEl.src = item.video;
-            videoC.appendChild(videoEl);
-          } else {
-            videoC.textContent = "No video available.";
-          }
-
-          // buy link
-          const buyLinkEl = document.getElementById("buy-link");
-          if (item.buy_link) {
-            buyLinkEl.href = item.buy_link;
-          } else {
-            buyLinkEl.style.display = "none";
-          }
-
-          // show details
-          detailsEl.classList.remove("hidden");
-        })
-        .catch(err => {
-          console.error("Error loading product wisdom:", err);
-          spinnerEl.style.display = "none";
-          notFoundEl.classList.remove("hidden");
-          notFoundEl.textContent = "Something went wrong loading wisdom.";
-        });
-    })();
+        content.innerHTML = `
+          <h2>${product.title}</h2>
+          <p><strong>How to Use:</strong> ${product.how_to_use}</p>
+          <p><strong>Bonus Tip:</strong> ${product.bonus_tip}</p>
+          <p><strong>Good For:</strong> ${product.good_for}</p>
+          ${product.image ? `<img src="${product.image}" alt="Product image">` : ""}
+          ${product.image2 ? `<img src="${product.image2}" alt="Product image 2">` : ""}
+          ${product.image3 ? `<img src="${product.image3}" alt="Product image 3">` : ""}
+          ${product.video ? `<video controls src="${product.video}" style="width:100%;border-radius:8px;"></video>` : ""}
+          ${product.buy_link ? `<p><a class="button" href="${product.buy_link}" target="_blank">Buy Now</a></p>` : ""}
+        `;
+      })
+      .catch(err => {
+        heading.textContent = "Something went wrong";
+        errorMessage.textContent = "Something went wrong loading wisdom.";
+        console.error(err);
+      });
   </script>
 </body>
 </html>
