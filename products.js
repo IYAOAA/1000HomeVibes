@@ -10,10 +10,15 @@ document.getElementById("product-grid").innerHTML = `
 fetch("https://one000homevibes.onrender.com/products")
   .then(res => res.json())
   .then(products => {
-    // sort newest first by updatedAt or createdAt if present
-    allProducts = (products || []).sort((a,b)=>{
-      return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
-    });
+    // ✅ Sort newest first by updatedAt or createdAt if present
+    if (products && products.length && products.some(p => p.updatedAt || p.createdAt)) {
+      allProducts = (products || []).sort((a,b)=>{
+        return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+      });
+    } else {
+      // ✅ If no timestamps exist, reverse array so last added shows first
+      allProducts = (products || []).reverse();
+    }
     displayProducts(allProducts);
   })
   .catch(err => {
@@ -38,14 +43,15 @@ function displayProducts(products) {
     const usdPrice = parseFloat(product.price) || 0;
     const ngnPrice = currency === "USD" ? usdPrice * 1500 : parseFloat(product.price) || 0;
 
-    // ✅ Determine affiliate site name (normalize to lowercase)
-    const mode = (product.mode || '').toLowerCase();
+    // ✅ Determine affiliate site name (fixed to use product.website)
     let affiliateSite = "Amazon"; // default
-    if (product.affiliateSite) {
+    if (product.website) {
+      affiliateSite = product.website; // ✅ now uses admin dropdown value
+    } else if (product.affiliateSite) {
       affiliateSite = product.affiliateSite;
-    } else if (mode === "ebay") {
+    } else if ((product.mode || '').toLowerCase() === "ebay") {
       affiliateSite = "eBay";
-    } else if (mode === "jumia") {
+    } else if ((product.mode || '').toLowerCase() === "jumia") {
       affiliateSite = "Jumia";
     }
 
