@@ -1,4 +1,6 @@
-let allProducts = [];
+product.js
+
+let allProducts = []; 
 let currentCategory = "All";
 
 // show loading state
