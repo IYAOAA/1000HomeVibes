@@ -153,7 +153,7 @@
       const detailsEl = document.getElementById("wisdom-details");
       const notFoundEl = document.getElementById("not-found");
 
-      fetch("/product-wisdom")
+      fetch("/product-wisdom.json")
         .then(res => res.json())
         .then(data => {
           // hide spinner
