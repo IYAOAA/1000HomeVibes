@@ -74,7 +74,7 @@
     const heading = document.querySelector("h1");
 
     // ✅ This now loads the local JSON file instead of backend endpoint
-    fetch("product-wisdom.json")
+    fetch("data/product-wisdom.json")
       .then(res => res.json())
       .then(data => {
         const product = data.find(item => item.id === productId);
