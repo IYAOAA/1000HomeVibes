@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Wisdom</title>
   <style>
-    /* Base styles */
     body {
       background-color: #013220;
       color: #f5f5f5;
@@ -20,8 +19,6 @@
       border-radius: 8px;
       padding: 20px;
     }
-
-    /* Header */
     .header {
       text-align: center;
       margin-bottom: 20px;
@@ -45,8 +42,6 @@
     .back-btn:hover {
       background: #ffd700;
     }
-
-    /* Image section */
     .image-section {
       text-align: center;
       margin-bottom: 20px;
@@ -56,9 +51,22 @@
       height: auto;
       border-radius: 8px;
       border: 1px solid gold;
+      margin-bottom: 10px;
     }
-
-    /* Sections layout */
+    .buy-link {
+      display: inline-block;
+      background: gold;
+      color: #013220;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin: 10px 0 20px;
+      transition: all 0.2s;
+    }
+    .buy-link:hover {
+      background: #ffd700;
+    }
     .section {
       margin-bottom: 20px;
     }
@@ -78,8 +86,6 @@
       list-style: disc;
       margin-left: 20px;
     }
-
-    /* Video section */
     .video-box {
       margin: 20px 0;
       text-align: center;
@@ -97,10 +103,15 @@
       <h1 id="productTitle">Loading...</h1>
     </div>
 
+    <!-- Top Image -->
     <div class="image-section">
-      <img id="productImage" src="" alt="Product Image">
+      <img id="productImage1" src="" alt="Product Image 1">
+    </div>
+    <div class="image-section">
+      <a id="buyLink" class="buy-link" target="_blank">Buy Now</a>
     </div>
 
+    <!-- Wisdom Sections -->
     <div class="section" id="bonusTipSection" style="display: none;">
       <h2>Bonus Tip</h2>
       <p id="bonusTipText"></p>
@@ -116,10 +127,26 @@
       <p id="detailsText"></p>
     </div>
 
+    <!-- Middle Image -->
+    <div class="image-section">
+      <img id="productImage2" src="" alt="Product Image 2" style="display:none;">
+    </div>
+
+    <!-- Technical Details -->
+    <div class="section" id="descriptionSection" style="display: none;">
+      <h2>Technical Details</h2>
+      <ul id="descriptionList"></ul>
+    </div>
+
+    <!-- Video -->
     <div class="video-box" id="videoSection" style="display: none;">
       <video id="wisdomVideo" controls></video>
     </div>
 
+    <!-- Bottom Image -->
+    <div class="image-section">
+      <img id="productImage3" src="" alt="Product Image 3" style="display:none;">
+    </div>
   </div>
 
   <script>
@@ -150,13 +177,31 @@
     function showContent(product, wisdom) {
       document.getElementById('productTitle').textContent = product.title || 'No Title';
 
-      // Image
-      const imgEl = document.getElementById('productImage');
-      if (product.image) {
-        imgEl.src = product.image;
-        imgEl.alt = product.title || 'Product';
+      // Buy link
+      const buyLink = document.getElementById('buyLink');
+      if (product.buy_link) {
+        buyLink.href = product.buy_link;
+        buyLink.style.display = 'inline-block';
       } else {
-        imgEl.style.display = 'none';
+        buyLink.style.display = 'none';
+      }
+
+      // Images
+      const img1 = document.getElementById('productImage1');
+      const img2 = document.getElementById('productImage2');
+      const img3 = document.getElementById('productImage3');
+
+      if (product.image) img1.src = product.image;
+      else img1.style.display = 'none';
+
+      if (product.image2) {
+        img2.src = product.image2;
+        img2.style.display = 'block';
+      }
+
+      if (product.image3) {
+        img3.src = product.image3;
+        img3.style.display = 'block';
       }
 
       // Bonus Tip
@@ -182,6 +227,22 @@
         const v = document.getElementById('wisdomVideo');
         v.src = wisdom.video;
         document.getElementById('videoSection').style.display = 'block';
+      }
+
+      // Technical details from product.description
+      if (product.description) {
+        const descList = document.getElementById('descriptionList');
+        descList.innerHTML = '';
+        // split by line or period for bullet list
+        const parts = product.description.split(/\n|\. /);
+        parts.forEach(part => {
+          if (part.trim() !== '') {
+            const li = document.createElement('li');
+            li.textContent = part.trim();
+            descList.appendChild(li);
+          }
+        });
+        document.getElementById('descriptionSection').style.display = 'block';
       }
     }
 
