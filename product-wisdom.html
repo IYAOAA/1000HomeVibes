@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Wisdom</title>
   <style>
-    /* Base styles */
     body {
       background-color: #013220;
       color: #f5f5f5;
@@ -16,75 +15,64 @@
     .container {
       max-width: 900px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 20px;
     }
-
-    /* Header */
-    .header {
+    h1 {
       text-align: center;
-      margin-bottom: 20px;
-    }
-    .header h1 {
-      font-size: 2rem;
       color: gold;
-      margin-bottom: 10px;
     }
     .back-btn {
-      display: inline-block;
+      display: block;
       background: gold;
       color: #013220;
       font-weight: bold;
       padding: 10px 20px;
+      margin: 20px auto;
       border-radius: 8px;
+      text-align: center;
+      width: 200px;
       text-decoration: none;
-      margin-bottom: 20px;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
     .back-btn:hover {
       background: #ffd700;
     }
 
-    /* Image section */
-    .image-section {
-      text-align: center;
+    /* Card layout */
+    .wisdom-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid gold;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-wrap: wrap;
       margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    .image-section img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
+    .wisdom-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
       border: 1px solid gold;
+      margin-right: 20px;
+      flex-shrink: 0;
     }
-
-    /* Sections layout */
-    .section {
-      margin-bottom: 20px;
+    .wisdom-content {
+      flex: 1;
+      min-width: 250px;
     }
-    .section h2 {
-      font-size: 1.2rem;
+    .wisdom-content h2 {
       color: gold;
-      margin-bottom: 8px;
-      border-bottom: 1px solid gold;
-      padding-bottom: 4px;
-    }
-    .section p, .section ul {
-      margin-left: 0;
       margin-top: 0;
-      line-height: 1.6;
     }
-    .section ul {
-      list-style: disc;
-      margin-left: 20px;
+    .wisdom-content p {
+      margin: 6px 0;
+      line-height: 1.4;
     }
-
-    /* Video section */
     .video-box {
-      margin: 20px 0;
-      text-align: center;
+      margin-top: 10px;
     }
-    .video-box iframe, .video-box video {
+    iframe, video {
       max-width: 100%;
       border-radius: 8px;
     }
@@ -92,97 +80,58 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <a href="products.html" class="back-btn">← Back to Products</a>
-      <h1 id="productTitle">Loading...</h1>
-    </div>
-
-    <div class="image-section">
-      <img id="productImage" src="" alt="Product Image">
-    </div>
-
-    <div class="section" id="bonusTipSection" style="display: none;">
-      <h2>Bonus Tip</h2>
-      <p id="bonusTipText"></p>
-    </div>
-
-    <div class="section" id="whoForSection" style="display: none;">
-      <h2>Who is this for?</h2>
-      <p id="whoForText"></p>
-    </div>
-
-    <div class="section" id="detailsSection" style="display: none;">
-      <h2>Details</h2>
-      <p id="detailsText"></p>
-    </div>
-
-    <div class="video-box" id="videoSection" style="display: none;">
-      <video id="wisdomVideo" controls></video>
-    </div>
-
+    <a href="index.html" class="back-btn">← Back to Products</a>
+    <h1>Product Wisdom</h1>
+    <div id="wisdomContainer"></div>
   </div>
 
   <script>
-    const API_BASE = 'https://one000homevibes.onrender.com';
+    const API_BASE = 'https://one000homevibes.onrender.com'; // your backend
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
     async function loadWisdom() {
       try {
-        const [wRes, pRes] = await Promise.all([
-          fetch(API_BASE + '/product-wisdom'),
-          fetch(API_BASE + '/products')
-        ]);
-        const wisdomArray = await wRes.json();
-        const products = await pRes.json();
+        const res = await fetch(API_BASE + '/product-wisdom');
+        const wisdomArray = await res.json();
 
+        // Find matching wisdom by product id
         const wisdom = wisdomArray.find(w => w.id === productId);
+
+        // Load product info for image/title
+        const pres = await fetch(API_BASE + '/products');
+        const products = await pres.json();
         const product = products.find(p => p.id === productId) || {};
 
-        showContent(product, wisdom);
-
+        displayWisdom(product, wisdom);
       } catch (err) {
         console.error(err);
-        document.getElementById('productTitle').textContent = 'Error loading product';
+        document.getElementById('wisdomContainer').textContent = 'Error loading wisdom ❌';
       }
     }
 
-    function showContent(product, wisdom) {
-      document.getElementById('productTitle').textContent = product.title || 'No Title';
+    function displayWisdom(product, wisdom) {
+      const container = document.getElementById('wisdomContainer');
+      container.innerHTML = '';
 
-      // Image
-      const imgEl = document.getElementById('productImage');
-      if (product.image) {
-        imgEl.src = product.image;
-        imgEl.alt = product.title || 'Product';
-      } else {
-        imgEl.style.display = 'none';
+      if (!wisdom) {
+        container.innerHTML = '<p style="text-align:center;color:white;">No wisdom found for this product.</p>';
+        return;
       }
 
-      // Bonus Tip
-      if (wisdom && wisdom.bonus_tip) {
-        document.getElementById('bonusTipText').textContent = wisdom.bonus_tip;
-        document.getElementById('bonusTipSection').style.display = 'block';
-      }
-
-      // Who is this for?
-      if (wisdom && wisdom.who_for) {
-        document.getElementById('whoForText').textContent = wisdom.who_for;
-        document.getElementById('whoForSection').style.display = 'block';
-      }
-
-      // Details
-      if (wisdom && wisdom.details) {
-        document.getElementById('detailsText').textContent = wisdom.details;
-        document.getElementById('detailsSection').style.display = 'block';
-      }
-
-      // Video
-      if (wisdom && wisdom.video) {
-        const v = document.getElementById('wisdomVideo');
-        v.src = wisdom.video;
-        document.getElementById('videoSection').style.display = 'block';
-      }
+      const card = document.createElement('div');
+      card.className = 'wisdom-card';
+      card.innerHTML = `
+        <img src="${product.image || 'https://via.placeholder.com/150'}" alt="Product">
+        <div class="wisdom-content">
+          <h2>${product.title || '(No Title)'}</h2>
+          <p><strong>Bonus Tip:</strong> ${wisdom.bonus_tip || '—'}</p>
+          <p><strong>Who is this for:</strong> ${wisdom.who_for || '—'}</p>
+          <p><strong>More Details:</strong> ${wisdom.details || '—'}</p>
+          ${wisdom.video ? `<div class="video-box"><iframe src="${wisdom.video}" frameborder="0" allowfullscreen></iframe></div>` : ''}
+        </div>
+      `;
+      container.appendChild(card);
     }
 
     window.addEventListener('DOMContentLoaded', loadWisdom);
